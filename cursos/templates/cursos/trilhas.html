@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% load static  %}
+
+{% block content %}
+        <div class="trilha" id="trilha">
+            <a href="{% url 'home' %}">
+                <svg xmlns="http://www.w3.org/2000/svg" class="seta" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
+                </svg>
+
+            </a>
+            <div class="trilhapg">
+                <div class="gridContainer">
+                    {% for trilha in trilhas %}
+                        <div class="card">
+                            <div class="infoCursos">
+                                <img class="img" src="{% static 'assets/trilhas' %}{{ trilha.imageTri }}">
+                                <textosCurso class="textos">
+                                    <h2 class="titulo">{{ trilha.nomeTri }}</h2>
+                                    <p class="legenda">trilha de {{ trilha.explicaTri }}</p>
+                                    <div class="pegar_os_dois">
+                                        <p class="horario">Carga Horária  </p>
+                                        <p class="horarioTrilha">De {{ trilha.cargaMinTri }} à {{ trilha.cargaMaxTri }} horas</p>
+                                    </div>
+                                </textosCurso>
+                                <a href="{% url 'cursosTrilha' trilha.idTrilha %}" class="btn">Saiba mais</a>
+                            </div>
+                        </div>
+                    {% endfor %}
+
+                </div>
+            </div>
+
+        </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            trilhasContCursos()
+        });
+        document.addEventListener('DOMContentLoaded', function() {
+
+            const trilhasDiv = document.querySelector('.trilhas');
+
+            const fases = trilhasDiv.querySelectorAll('.fases').length;
+
+            const novoHeight = (fases-1) * 30;
+
+            trilhasDiv.style.height = `${novoHeight}vh`;
+        });
+    </script>
+{% endblock %}

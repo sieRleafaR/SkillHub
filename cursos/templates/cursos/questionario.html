@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+
+{% block title %}Cursos{% endblock %}
+
+{% load static  %}
+
+{% block content %}
+        <div id="formulario" class="formulario">
+            <a href="{% url 'home' %}">
+                <svg xmlns="http://www.w3.org/2000/svg" class="seta" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
+                </svg>
+            </a>
+
+            {% if mensagem_erro == 'True' %}
+                <div id="popupErro" class="erroEnvioForm">
+                    <div class="textoErro">
+                        <div class="svgErro">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-x-circle-fill" viewBox="0 0 16 16">
+                                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293z"/>
+                            </svg>
+                        </div>
+                        <h4>Preencha os campos corretamente.</h4>
+                    </div>
+                    <div class="fecharDivErro">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-x-lg" viewBox="0 0 16 16">
+                            <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
+                        </svg>
+                    </div>
+                    <div class="loadingBar" id="loadingBar"></div>
+                </div>
+            {% endif %}
+            <div class="formContainer">
+                <div class="right">
+                    <img class="imgForm" src="{% static 'img/form.png' %}">
+                </div>
+                <div class="left">
+
+
+                   <form method="post" action="{% url 'formulario' %}" >
+                    {% csrf_token %}
+                    <input placeholder="Nome" name="nomeForm" id="letras" class="input" type="text" required>
+                    <input placeholder="Email" name="emailForm" id="email" class="input" type="email" required>
+                     <input placeholder="Telefone" name="telefoneForm" id="telefone" class="input" type="tel" required>
+                   <script>
+                           document.addEventListener("DOMContentLoaded", function () {
+                               const cursoSelector = document.getElementById('curso');
+                               const outroCursoInput = document.getElementById('at');
+
+                               cursoSelector.addEventListener('change', function () {
+                                   if (cursoSelector.value === 'outros') {
+                                       outroCursoInput.style.display = 'block';
+                                       outroCursoInput.setAttribute('required', 'true');
+                                   } else {
+                                       outroCursoInput.style.display = 'none';
+                                       outroCursoInput.removeAttribute('required');
+                                       outroCursoInput.value = '';
+                                   }
+                               });
+                           });
+                       </script>
+                       <select id="curso" name="nomeCurso"  required>
+                           <option value="">Escolha um curso:</option>
+                           {% for curso in cursos %}
+                               <option value="{{ curso.nome_curso }}">{{ curso.nome_curso }}</option>
+                           {% endfor %}
+                           <option value="outros">Outros</option>
+                       </select>
+
+                       <input style="display:none" class="input" id="at" placeholder="Digite o nome do curso que se interessou:" name="outroInput">
+
+                   <div class="politica">
+                       <label class="checkbox-container">
+                            <input id="checkboxTermos" class="checkbox" type="checkbox" required>
+                            <span class="custom-checkbox"></span><pre>Aceito os termos e condições <a class="termos_colorido" href="{% url 'Termos' %}">Ver</a></pre>
+                        </label>
+                   </div>
+
+                   <a href="{% url 'validar_contato' %}">
+                    <button type="submit" class="send">
+                        <div class="svg-wrapper-1">
+                            <div class="svg-wrapper">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                                    <path fill="none" d="M0 0h24v24H0z"></path>
+                                    <path fill="currentColor" d="M1.946 9.315c-.522-.174-.527-.455.01-.634l19.087-6.362c-.529-.176.832.12.684.638l-5.454 19.086c-.15.529-.455.547-.679.045L12 14l6-8-8 6-8.054-2.685z"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        <span>Enviar</span>
+                    </button>
+                   </a>
+                </form>
+                </div>
+
+        <div class="popupObrigada" id="popupObg" style="display: none;">
+        <img src="{% static 'img/LogoRed.png' %}" class="login2">
+        <p>Obrigado por enviar suas preferências de cursos. Recebemos suas informações com sucesso. Fique à vontade
+            para voltar sempre que precisar de mais informações ou tiver novas dúvidas!</p>
+        <h5>A SkillHub te agradece</h5>
+        <a href="{% url 'home' %}" id="btnLink">
+            <button class="backBtn">Voltar</button>
+        </a>
+    </div>
+
+    {% if popUp %}
+        <script>
+            window.onload = function() {
+                popupForm('popupObg');
+                gerarBarraDeProgresso(6);
+            };
+
+
+        </script>
+    {% endif %}
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Define o display do popupErro como "flex" ao carregar a página
+        const popupErro = document.getElementById("popupErro");
+        popupErro.style.display = "flex";
+
+        // Função para fechar o popupErro
+        function fecharPopupErro() {
+            popupErro.style.display = "none";
+        }
+
+        // Adiciona um evento de clique ao botão de fechar
+        const fecharDivErro = document.querySelector(".fecharDivErro");
+        fecharDivErro.addEventListener("click", fecharPopupErro);
+    });
+</script>
+            </div>
+        </div>
+         <script src="{% static 'js/main.js'  %}"></script>
+{% endblock %}

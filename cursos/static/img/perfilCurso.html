@@ -1,0 +1,376 @@
+{% extends 'base.html' %}
+
+{% block title %}Perfil do Curso - {{ curso.nome_curso }}{% endblock %}
+
+{% load static %}
+
+{% block content %}
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div id="perfilCurso" class="perfilContainer">
+            <div class="perfil">
+                <div class="topoPerfil">
+                    <img src="{% static '/img/logoSenaiSP.png' %}" alt="" class="logoSenai">
+                    {% if estadoPagina != 'mostrar' %}
+                        <button class="saveBtn" type="submit">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-floppy" viewBox="0 0 16 16">
+                              <path d="M11 2H9v3h2z"/>
+                              <path d="M1.5 0h11.586a1.5 1.5 0 0 1 1.06.44l1.415 1.414A1.5 1.5 0 0 1 16 2.914V14.5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 14.5v-13A1.5 1.5 0 0 1 1.5 0M1 1.5v13a.5.5 0 0 0 .5.5H2v-4.5A1.5 1.5 0 0 1 3.5 9h9a1.5 1.5 0 0 1 1.5 1.5V15h.5a.5.5 0 0 0 .5-.5V2.914a.5.5 0 0 0-.146-.353l-1.415-1.415A.5.5 0 0 0 13.086 1H13v4.5A1.5 1.5 0 0 1 11.5 7h-7A1.5 1.5 0 0 1 3 5.5V1H1.5a.5.5 0 0 0-.5.5m3 4a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 .5-.5V1H4zM3 15h10v-4.5a.5.5 0 0 0-.5-.5h-9a.5.5 0 0 0-.5.5z"/>
+                            </svg>
+                        </button>
+                    {% endif %}
+                    {% if estadoPagina != 'adicionar' %}
+{#                    adicionar o and para verificar login    #}
+                        <a href="{% url 'apagarCursos' idCurso=curso.id_curso %}" class="apagarCursoBtn">
+                            <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="100" height="100" viewBox="0 0 64 64">
+                                <path class="lixo"  d="M 30 2 C 29 2 28.101563 2.5 27.5 3.300781 L 24.5 8 L 13 8 C 11.300781 8 10 9.300781 10 11 L 10 17 C 10 18.699219 11.300781 20 13 20 L 13.097656 20 L 16.597656 53.5 C 16.898438 56.101563 19 58 21.597656 58 L 46.402344 58 C 49 58 51.101563 56.101563 51.402344 53.5 L 54.902344 20 L 55 20 C 56.699219 20 58 18.699219 58 17 L 58 11 C 58 9.300781 56.699219 8 55 8 L 43.5 8 L 40.402344 3.300781 C 39.902344 2.5 38.902344 2 37.902344 2 Z M 30.097656 4 L 38 4 C 38.300781 4 38.601563 4.199219 38.800781 4.398438 L 41.097656 8 L 26.902344 8 L 29.199219 4.398438 C 29.398438 4.199219 29.699219 4 30.097656 4 Z M 13 10 L 55 10 C 55.601563 10 56 10.398438 56 11 L 56 17 C 56 17.601563 55.601563 18 55 18 L 13 18 C 12.398438 18 12 17.601563 12 17 L 12 11 C 12 10.398438 12.398438 10 13 10 Z M 16 12 C 15.398438 12 15 12.398438 15 13 L 15 15 C 15 15.601563 15.398438 16 16 16 C 16.601563 16 17 15.601563 17 15 L 17 13 C 17 12.398438 16.601563 12 16 12 Z M 21 12 C 20.398438 12 20 12.398438 20 13 L 20 15 C 20 15.601563 20.398438 16 21 16 C 21.601563 16 22 15.601563 22 15 L 22 13 C 22 12.398438 21.601563 12 21 12 Z M 26 12 C 25.398438 12 25 12.398438 25 13 L 25 15 C 25 15.601563 25.398438 16 26 16 C 26.601563 16 27 15.601563 27 15 L 27 13 C 27 12.398438 26.601563 12 26 12 Z M 31 12 C 30.398438 12 30 12.398438 30 13 L 30 15 C 30 15.601563 30.398438 16 31 16 C 31.601563 16 32 15.601563 32 15 L 32 13 C 32 12.398438 31.601563 12 31 12 Z M 37 12 C 36.398438 12 36 12.398438 36 13 L 36 15 C 36 15.601563 36.398438 16 37 16 C 37.601563 16 38 15.601563 38 15 L 38 13 C 38 12.398438 37.601563 12 37 12 Z M 42 12 C 41.398438 12 41 12.398438 41 13 L 41 15 C 41 15.601563 41.398438 16 42 16 C 42.601563 16 43 15.601563 43 15 L 43 13 C 43 12.398438 42.601563 12 42 12 Z M 47 12 C 46.398438 12 46 12.398438 46 13 L 46 15 C 46 15.601563 46.398438 16 47 16 C 47.601563 16 48 15.601563 48 15 L 48 13 C 48 12.398438 47.601563 12 47 12 Z M 52 12 C 51.398438 12 51 12.398438 51 13 L 51 15 C 51 15.601563 51.398438 16 52 16 C 52.601563 16 53 15.601563 53 15 L 53 13 C 53 12.398438 52.601563 12 52 12 Z M 15.097656 20 L 52.902344 20 L 49.402344 53.300781 C 49.199219 54.800781 48 56 46.402344 56 L 21.597656 56 C 20.097656 56 18.800781 54.800781 18.597656 53.300781 Z M 34 25 C 33.398438 25 33 25.398438 33 26 L 33 46 C 33 46.601563 33.398438 47 34 47 C 34.601563 47 35 46.601563 35 46 L 35 26 C 35 25.398438 34.601563 25 34 25 Z M 25 25.097656 C 24.398438 25.097656 24 25.597656 24.097656 26.097656 L 25.097656 46.097656 C 25 46.597656 25.5 47 26 47 C 26.601563 47 27 46.5 27 46 L 26 26 C 26 25.398438 25.5 25 25 25.097656 Z M 43.097656 25.097656 C 42.5 25.097656 42.097656 25.5 42.097656 26 L 41.097656 46 C 41 46.5 41.398438 47 42 47 C 42.601563 47 43 46.597656 43 46.097656 L 44 26.097656 C 44 25.5 43.597656 25.097656 43.097656 25.097656 Z M 23 52 C 22.398438 52 22 52.398438 22 53 C 22 53.601563 22.398438 54 23 54 L 37 54 C 37.601563 54 38 53.601563 38 53 C 38 52.398438 37.601563 52 37 52 Z M 41 52 C 40.398438 52 40 52.398438 40 53 C 40 53.601563 40.398438 54 41 54 L 45 54 C 45.601563 54 46 53.601563 46 53 C 46 52.398438 45.601563 52 45 52 Z"></path>
+                            </svg>
+                        </a>
+                    {% endif %}
+                </div>
+                <div class="image">
+
+                    {% if estadoPagina == 'mostrar' %}
+                    {% elif estadoPagina == 'adicionar' %}
+                    {% else %}
+
+                    {% endif %}
+                </div>
+
+                <div class="lorax">
+                    <div class="info">
+                    {% if estadoPagina == 'mostrar' %}
+                        <img src="{% static 'assets/cursos/' %}{{ curso.imagem_curso }}" class="imgPerfil">
+                        <h1>{{ curso.nome_curso }}</h1>
+                        <p>Curso {{ curso.tipo_curso }}</p>
+                        <h3>Resumo do Curso:</h3>
+                        <p>{{ curso.resumo_curso }}</p>
+                        <div class="footerPerfilCurso">
+                            <div class="divisoriaFooterPerfil">
+                                <h3>Cronograma:</h3>
+                                <p>{{ curso.dias_curso }}</p>
+                                <p>{{ curso.horas_curso }} horas</p>
+                            </div>
+                            <div class="divisoriaFooterPerfil">
+                                <h3>Tags do curso:</h3>
+                                <p>{{ curso.tags_curso }}</p>
+                            </div>
+                            <div class="divisoriaFooterPerfil">
+                                <h3>Status:</h3>
+                                <p>Curso {{ curso.statusPag_curso }}</p>
+                            </div>
+                        </div>
+                    {% elif estadoPagina == 'adicionar' %}
+                        <input style="display: none;" type="file" name="imagem_curso" class="imgPerfil" id="input-imagem" accept="image/*">
+                        <label for="input-imagem">
+                            <img id="preview-imagem" src="{% static 'img/UploadImgBlue.png' %}" class="imgPerfil" alt="Imagem selecionada">
+                        </label>
+                        <h1><input type="text" name="nome_curso" placeholder="Nome do curso" ></h1>
+                        <h3>Tipo de Curso:</h3>
+                        <p>
+                            <select id="tagSelect" class="select-box" name="tipo_curso">
+                                <option value="">Selecione</option>
+                                {% for tag in tags %}
+                                    <option value="{{ tag }}" >{{ tag }}</option>
+                                {% endfor %}
+                            </select>
+                        </p>
+                        <h3>Resumo do Curso:</h3>
+                        <p><input type="text" name="resumo_curso" placeholder="Resumo do curso"></p>
+                        <div class="footerPerfilCurso">
+                            <div class="divisoriaFooterPerfil">
+                                <h3>Cronograma:</h3>
+                                <p id="selected-days"></p>
+                                <p>
+                                    <select id="day-selector" name="dias_curso">
+                                        <option value="">Selecione um dia...</option>
+                                        <option value="domingo">Domingo</option>
+                                        <option value="segunda">Segunda</option>
+                                        <option value="terca">Terça</option>
+                                        <option value="quarta">Quarta</option>
+                                        <option value="quinta">Quinta</option>
+                                        <option value="sexta">Sexta</option>
+                                        <option value="sabado">Sábado</option>
+                                    </select>
+                                </p>
+                                <input type="hidden" name="dias_selecionados" id="dias-selecionados" value="">
+                                <p><input type="number" name="horas_curso" placeholder="Quantia de horas do curso"></p>
+                            </div>
+                            <div class="divisoriaFooterPerfil">
+                                <h3>Tags do Curso:</h3>
+                                <p>
+                                    <p id="added-items"></p>
+                                    <div class="input-container">
+                                        <input type="text" id="text-input" name="tags_curso" placeholder="Digite algo...">
+                                        <button id="add-button" type="button">Adicionar</button>
+                                    </div>
+                                </p>
+                                <input type="hidden" name="tags_selecionadas" id="tags-selecionadas" value="">
+                            </div>
+                            <div class="divisoriaFooterPerfil">
+                                <h3>Status:</h3>
+                                <p>
+                                    <select id="statusSelect" class="select-box" name="status_curso">
+                                        <option value="">Selecione</option>
+                                        <option value="Pago">Pago</option>
+                                        <option value="Gratuito">Gratuito</option>
+                                    </select>
+                                </p>
+                            </div>
+                        </div>
+                    {% else %}
+                        <input style="display: none;" type="file" name="imagem_curso" class="imgPerfil" id="input-imagem" accept="image/*">
+                        <label for="input-imagem">
+                            <img id="preview-imagem" src="{% static 'assets/cursos' %}{{ curso.imagem_curso }}" class="imgPerfil" alt="Imagem selecionada">
+                        </label>
+                        <h1><input type="text" name="edit_nome_curso" placeholder="Nome do curso" value="{{ curso.nome_curso }}"></h1>
+                        <h3>Tipo de Curso:</h3>
+                        <p>
+                            <select id="tagSelect" class="select-box" name="tipo_curso">
+                                <option value="">Selecione</option>
+                                {% for tag in tags %}
+                                    <option value="{{ tag }}" {% if curso.tipo_curso == tag %}selected{% endif %}>{{ tag }}</option>
+                                {% endfor %}
+                            </select>
+                        </p>
+                        <h3>Resumo do Curso:</h3>
+                        <p><input type="text" name="resumo_curso" placeholder="Resumo do curso" value="{{ curso.resumo_curso }}"></p>
+
+
+                        <div class="footerPerfilCurso">
+                            <div class="divisoriaFooterPerfil">
+                                <h3>Cronograma:</h3>
+                                <p id="selected-days"></p>
+                                <p>
+                                    <select id="day-selector" name="dias_curso">
+                                        <option value="">Selecione um dia...</option>
+                                        <option value="domingo">Domingo</option>
+                                        <option value="segunda">Segunda</option>
+                                        <option value="terca">Terça</option>
+                                        <option value="quarta">Quarta</option>
+                                        <option value="quinta">Quinta</option>
+                                        <option value="sexta">Sexta</option>
+                                        <option value="sabado">Sábado</option>
+                                    </select>
+                                </p>
+                                <input type="hidden" name="dias_selecionados" id="dias-selecionados" value="">
+                                <p><input type="number" name="horas_curso" placeholder="Quantia de horas do curso" value="{{ curso.horas_curso }}"></p>
+                            </div>
+                            <div class="divisoriaFooterPerfil">
+                                <h3>Tags do Curso:</h3>
+                                <p>
+                                    <p id="added-items"></p>
+                                    <div class="input-container">
+                                        <input type="text" id="text-input" name="tags_curso" placeholder="Digite algo...">
+                                        <button id="add-button" type="button">Adicionar</button>
+                                    </div>
+                                </p>
+                            </div>
+                            <div class="divisoriaFooterPerfil">
+                                <input type="hidden" name="tags_selecionadas" id="tags-selecionadas" value="">
+                                <h3>Status:</h3>
+                                <p>
+                                    <select id="statusSelect" class="select-box" name="status_curso">
+                                        <option value="">Selecione</option>
+                                        <option value="Pago" {% if curso.statusPag_curso == "Pago" %}selected {% endif %}>Pago</option>
+                                        <option value="Gratuito" {% if curso.statusPag_curso == "Gratuito" %}selected{% endif %}>Gratuito</option>
+                                    </select>
+                                </p>
+                            </div>
+                        </div>
+                    {% endif %}
+                    </div>
+                </div>
+                <div class="quadro">
+                    <div class="quadrado">
+                        <h1 class="tituloDesc">Descrição do Curso:</h1>
+                        {% if estadoPagina == 'mostrar' %}
+                            <h3 class="resumo">{{ curso.descricao_curso }}</h3>
+                        {% elif estadoPagina == 'adicionar' %}
+                            <style>
+                                .resumo:empty:before {
+                                    content: attr(data-placeholder);
+                                    color: #999; /* Cor do placeholder */
+                                    pointer-events: none; /* Evita interação com o placeholder */
+                                }
+                            </style>
+                            <div class="resumo" contenteditable="true" data-placeholder="Digite a descrição do curso" oninput="this.nextElementSibling.value=this.innerText;"></div>
+                            <input type="hidden" name="descricao_curso" value="">
+                        {% else %}
+                            <div class="resumo" contenteditable="true" data-placeholder="Digite a descrição do curso" oninput="this.nextElementSibling.value=this.innerText;">
+                                {{ curso.descricao_curso }}</div>
+                            <input type="hidden" name="descricao_curso" value="">
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </form>
+    <script>
+        const input = document.getElementById('text-input');
+        const addButton = document.getElementById('add-button');
+        const addedItemsContainer = document.getElementById('added-items');
+        const tagsSelecionadasInput = document.getElementById('tags-selecionadas');
+
+        // Inicialização com valores existentes, caso curso.tags_curso tenha conteúdo
+        const tagsSelecionadas = '{{ curso.tags_curso }}';
+        if (tagsSelecionadas.trim() !== '') {
+            const tagsSelecionadasArray = tagsSelecionadas.split(',');
+            tagsSelecionadasArray.forEach(tag => {
+                if (tag.trim() !== "") {
+                    addItem(tag.trim());  // Adiciona cada tag preexistente
+                }
+            });
+        }
+
+        // Event listener para adicionar novas tags ao clicar no botão
+        addButton.addEventListener('click', function () {
+            const inputValue = input.value.trim();
+
+            if (inputValue && !isItemAlreadyAdded(inputValue)) {
+                addItem(inputValue);
+                input.value = '';  // Limpa o campo de entrada de texto
+                updateTagsHiddenInput(); // Atualiza o campo de tags
+            }
+        });
+
+        // Função para verificar se a tag já foi adicionada
+        function isItemAlreadyAdded(value) {
+            return Array.from(addedItemsContainer.children).some(
+                (element) => element.dataset.value === value
+            );
+        }
+
+        // Função para adicionar uma tag selecionada
+        function addItem(value) {
+            const itemElement = document.createElement('div');
+            itemElement.classList.add('added-item');
+            itemElement.dataset.value = value;
+            itemElement.innerHTML = `${value} <span>x</span>`;
+
+            // Adiciona a funcionalidade de remoção ao clicar no 'x'
+            itemElement.querySelector('span').addEventListener('click', function () {
+                itemElement.remove();
+                updateTagsHiddenInput(); // Atualiza o campo de tags
+            });
+
+            addedItemsContainer.appendChild(itemElement);
+            updateTagsHiddenInput();
+        }
+
+        // Função para atualizar o campo hidden com as tags selecionadas
+        function updateTagsHiddenInput() {
+            const addedItems = Array.from(addedItemsContainer.children);
+            const addedValues = addedItems.map(item => item.dataset.value);
+            tagsSelecionadasInput.value = addedValues.join(',');
+            console.log('Tags selecionadas:', tagsSelecionadasInput.value);
+        }
+
+
+    const daySelector = document.getElementById('day-selector');
+    const selectedDaysContainer = document.getElementById('selected-days');
+    const diasSelecionadosInput = document.getElementById('dias-selecionados');
+    const diasSelecionados = '{{ curso.dias_curso }}';
+    const diasSelecionadosArray = diasSelecionados.split(',');
+    diasSelecionadosArray.forEach(day => {
+        if (day.trim() !== "") {
+            addDayToSelection(day.trim());
+        }
+    });
+
+    daySelector.addEventListener('change', function () {
+        const selectedDay = daySelector.value;
+
+        // Verifique se o valor não é vazio (não foi selecionado um dia)
+        if (selectedDay && !isDayAlreadySelected(selectedDay)) {
+            addDayToSelection(selectedDay);
+            updateDaysHiddenInput(); // Atualiza apenas o campo de dias
+        }
+
+        // Limpa a seleção após adicionar
+        daySelector.value = '';
+    });
+
+    function isDayAlreadySelected(day) {
+        return Array.from(selectedDaysContainer.children).some(
+            (element) => element.dataset.day === day
+        );
+    }
+
+    function addDayToSelection(day) {
+        // Cria um novo item de lista (li) para o dia selecionado
+        const dayElement = document.createElement('li');
+        dayElement.classList.add('selected-day');
+        dayElement.dataset.day = day;
+        dayElement.innerHTML = `${capitalize(day)} <span>x</span>`;
+
+        // Adiciona a funcionalidade de remoção ao clicar no 'x'
+        dayElement.querySelector('span').addEventListener('click', function () {
+            dayElement.remove();
+            updateDaysHiddenInput(); // Atualiza o campo de dias
+        });
+
+        selectedDaysContainer.appendChild(dayElement);
+        updateDaysHiddenInput();
+    }
+
+    function updateDaysHiddenInput() {
+        // Obtém todos os elementos 'li' na lista de dias selecionados
+        const selectedDays = Array.from(selectedDaysContainer.children);
+
+        // Mapeia para pegar os valores dos dias selecionados
+        const selectedValues = selectedDays.map(day => day.dataset.day);
+
+        // Atualiza o valor do input hidden com os dias selecionados
+        diasSelecionadosInput.value = selectedValues.join(',');
+        console.log('Dias selecionados:', diasSelecionadosInput.value);
+    }
+
+    function capitalize(word) {
+        return word.charAt(0).toUpperCase() + word.slice(1);
+    }
+    </script>
+    <script>
+        const inputImagem = document.getElementById('input-imagem');
+        const previewImagem = document.getElementById('preview-imagem');
+
+        inputImagem.addEventListener('change', function (event) {
+            const file = event.target.files[0]; // Obtém o primeiro arquivo selecionado
+
+            if (file) {
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    previewImagem.src = e.target.result;
+                };
+
+                reader.readAsDataURL(file); // Lê o arquivo como uma URL de dados
+            }
+        });
+
+    </script>
+    <script>
+        document.querySelectorAll('.resumo[contenteditable="true"]').forEach((element) => {
+            element.addEventListener('input', () => {
+                if (element.textContent.trim() !== '') {
+                    element.classList.add('not-empty');
+                } else {
+                    element.classList.remove('not-empty');
+                }
+            });
+        });
+        window.onload = function() {
+            const resumoDiv = document.querySelector('.resumo');
+            const hiddenInput = document.querySelector('input[name="descricao_curso"]');
+
+            hiddenInput.value = resumoDiv.innerText.trim();
+
+            resumoDiv.addEventListener('input', function() {
+                hiddenInput.value = resumoDiv.innerText.trim();
+            });
+        };
+    </script>
+
+{% endblock %}

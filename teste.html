@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset='utf-8'>
+  <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+  <title>Trilha</title>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <link rel='stylesheet' type='text/css' media='screen' href='main.css'>
+  <script src='main.js'></script>
+  <style>
+    *{
+      margin: 0;
+      padding: 0;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+    body{
+      min-height: 100vh;
+      max-width: 100vw;
+    }
+    .cursosTrilha{
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      height: 100%;
+    }
+    .headerTrilhaDiv{
+      display: flex;
+      height: 20vh;
+      width: 80%;
+      text-align: center;
+      margin: auto;
+    }
+    .textHeader{
+      background-color: #2C4957;    
+      width: 60%;
+      display: flex;
+      flex-direction: column;
+      align-items: start;
+      justify-content: end;
+      color: white; 
+      *{
+        margin: 1vh;
+      }
+    }
+    .legendaCursosTrilha{
+        text-align: right;
+        width: 40%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-evenly;
+    }
+    h2{
+      position: relative;
+      font-size: 2vw;
+    }
+    h2::before {
+      content: "";
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      position: absolute;
+      top: 50%;
+      right: -5%;
+      transform: translateY(-50%);
+    }
+    h2:nth-child(odd)::before {
+      background-color: #006496; /* Cor do círculo */
+      border: 2px solid #006496; /* Borda preta */
+    }
+    h2:nth-child(even)::before {
+      background-color: #9A1915; /* Cor do círculo */
+      border: 2px solid #9A1915; /* Borda preta */
+    }
+    .containerCursosTrilha{
+      
+    }
+  </style>
+</head>
+<body>
+  <div class="cursosTrilha">
+    <div class="headerTrilhaDiv">
+      <div class="textHeader">
+        <h1>Nome da Trilha</h1>
+        <h4>Resumo da Trilha</h4>
+      </div>
+      <div class="legendaCursosTrilha">
+        <h2>Cursos</h2>
+        <h2>Trilhas</h2>
+      </div>
+    </div>
+    <div class="containerCursosTrilha">
+      <div class="etapaContainer">
+        <div class="block">aiwuefh</div>
+        <div class="block">weiuhf</div>
+        <div class="block">eifuh</div>
+        <div class="block">weilfh</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

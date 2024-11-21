@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+
+{% block title %}login{% endblock %}
+
+{% load static %}
+
+{% block content %}
+
+        <div class="login" id="login">
+           <a href="{% url 'home' %}">
+                <svg xmlns="http://www.w3.org/2000/svg" class="seta" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
+                </svg>
+            </a>
+        {% if mensagem == 'True' %}
+            <div id="popupErro" class="erroEnvioForm">
+                <div class="textoErro">
+                    <div class="svgErro">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-x-circle-fill" viewBox="0 0 16 16">
+                            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293z"/>
+                        </svg>
+                    </div>
+                    <h4>Usuário inexistente ou senha inválida</h4>
+                </div>
+                <div class="fecharDivErro">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-x-lg" viewBox="0 0 16 16">
+                        <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
+                    </svg>
+                </div>
+                <div class="loadingBar" id="loadingBar"></div>
+            </div>
+        {% endif %}
+            <div class="formContainer">
+                <div class="right">
+                    <img class="imgForm" src="{% static 'img/loginImg.png' %}">
+                </div>
+                <div class="left">
+                    <form method="POST" action="{% url 'login_view' %}">
+                        <h1>Faça login aqui:</h1>
+                            {% csrf_token %}
+                            <input placeholder="Nome" class="input" id="nome" type="text" name="nome" required>
+                            <div style="position: relative;">
+                            <input placeholder="Senha" class="input" id="senha" type="password" name="senha" required>
+                            <span id="togglePassword" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer;">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-eye" viewBox="0 0 16 16" id="eye-icon">
+                                    <path d="M8 3.5a6.5 6.5 0 0 0 0 9 6.5 6.5 0 0 0 0-9zm0 7a.5.5 0 0 1 0-1 .5.5 0 0 1 0 1zm0-8A8 8 0 0 0 0 8a8 8 0 0 0 16 0A8 8 0 0 0 8 3.5zm0 1a7 7 0 0 1 0 14 7 7 0 0 1 0-14z" />
+                                </svg>
+                            </span>
+                        </div>
+                            <button type="submit" class="send">
+                                <div class="svg-wrapper-1">
+                                    <div class="svg-wrapper">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                                            <path fill="none" d="M0 0h24v24H0z"></path>
+                                            <path fill="currentColor" d="M1.946 9.315c-.522-.174-.527-.455.01-.634l19.087-6.362c.529-.176.832.12.684.638l-5.454 19.086c-.15.529-.455.547-.679.045L12 14l6-8-8 6-8.054-2.685z"></path>
+                                        </svg>
+                                    </div>
+                                </div>
+                                <span>Enviar</span>
+                            </button>
+                        </form>
+
+                        <div class="popupObrigada" id="popupLog" style="display: none;">
+                            <img src="{% static 'img/LogoRed.png' %}" class="login2">
+                            <p class="text">Sistema de gestão e apresentação dos cursos do senai ao público com interesse nos mesmo</p>
+                            <img src="{% static 'img/icons.png' %}" class="icones">
+                            <p class="popupText">Visualizar cursos da instituição</p>
+                            <p class="popupText">Gerenciar e adicionar cursos</p>
+                            <p class="popupText">Verificar formulários de interesse</p>
+                            <a href="{% url 'home' %}">
+                                <button class="backBtn" >Voltar</button>
+                            </a>
+
+                        </div>
+                        {% if popUpLogin %}
+                            <script>
+                                window.onload = function() {
+                                    popupForm('popupLog');  // Passa o ID do popup de login
+                                    gerarBarraDeProgresso(6);
+                                };
+                            </script>
+                        {% endif %}
+
+
+                </div>
+            </div>
+        </div>
+        <script>
+            const togglePassword = document.getElementById('togglePassword');
+            const passwordInput = document.getElementById('senha');
+            const eyeIcon = document.getElementById('eye-icon');
+
+            togglePassword.addEventListener('click', function () {
+                // Alternar entre o tipo de entrada
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+
+                // Alterar o ícone do olho
+                eyeIcon.setAttribute('class', type === 'password' ? 'bi bi-eye' : 'bi bi-eye-slash');
+            });
+        document.addEventListener("DOMContentLoaded", function() {
+        // Define o display do popupErro como "flex" ao carregar a página
+        const popupErro = document.getElementById("popupErro");
+        popupErro.style.display = "flex";
+
+        // Função para fechar o popupErro
+        function fecharPopupErro() {
+            popupErro.style.display = "none";
+        }
+
+        // Adiciona um evento de clique ao botão de fechar
+        const fecharDivErro = document.querySelector(".fecharDivErro");
+        fecharDivErro.addEventListener("click", fecharPopupErro);
+    });        </script>
+{% endblock %}

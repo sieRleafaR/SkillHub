@@ -1,0 +1,222 @@
+{% extends 'base.html' %}
+
+{% block title %}Cursos{% endblock %}
+
+{% load static  %}
+
+{% block content %}
+    <style>
+        </style>
+        <div id="cursos">
+            <div id="PerfilCurso" class="cursoContainer">
+                <nav class="caixa">
+                    <ul class="nav-options">
+                        <li>
+                            <a href="{% url 'cursos' %}" class="{% if request.path == '/cursos/' %}active{% endif %}">Todos</a>
+                        </li>
+                        <li>
+                            <a href="{% url 'cursos_filtrados' filtro='populares' %}" class="{% if '/populares' in request.path %}active{% endif %}">Populares</a>
+                        </li>
+                        <select id="tagSelect" onchange="filtrarPorTag()" class="select-box">
+                            <option value="">Escolher Tag</option>
+                            {% for tag in tags %}
+                                <option value="{{ tag }}">{{ tag }}</option>
+                            {% endfor %}
+                        </select>
+                    </ul>
+                {% if loginRealizado %}
+                    <a class="addBtnTeste" href="{% url 'adicionarCurso' %}">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-plus-lg" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"/>
+                        </svg>
+                    </a>
+                {% endif %}
+                <div class="search-box">
+                    <input type="text" id="search-input" placeholder="Buscar" class="search-bar" onkeyup="filterCursos()">
+                    <svg xmlns="http://www.w3.org/2000/svg"  class="lupa" viewBox="0 0 16 16">
+                        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+                    </svg>
+                </div>
+            </nav>
+            <div id="selected-tags-container" class="containerTagsCursos">
+            </div>
+            <section class="cursos" id="curso-list">
+                {% for curso in cursos %}
+                    <div class="cursoCard"
+                         data-nome="{{ curso.nome_curso|lower }}"
+                         data-tipo="{{ curso.tipo_curso|lower }}"
+                         data-tags="{{ curso.tags_cursos|lower }}">
+                        <img src="{% static 'assets/cursos' %}{{ curso.imagem_curso }}" alt="{{ curso.imagem_curso }}">
+                        <div class="infoCursos">
+                            <textosCurso>
+                                <h2>{{ curso.nome_curso }}</h2>
+                                <p>Curso de {{ curso.tipo_curso }}</p>
+                            </textosCurso>
+                            <a href="{% url 'perfilCurso' curso.id_curso %}" class="btn">Saiba mais</a>
+                        </div>
+                        {% if loginRealizado %}
+                            <div class="contAdminiCurso">
+                                <a href="{% url 'editarCurso' curso.id_curso %}" class="btnEditCurso">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
+                                      <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325"/>
+                                    </svg>
+                                </a>
+                                <a href="{% url 'apagarCursos' idCurso=curso.id_curso %}" class="btnDeleteCurso">
+                                    <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="100" height="100" viewBox="0 0 64 64">
+                                        <path class="lixo"  d="M 30 2 C 29 2 28.101563 2.5 27.5 3.300781 L 24.5 8 L 13 8 C 11.300781 8 10 9.300781 10 11 L 10 17 C 10 18.699219 11.300781 20 13 20 L 13.097656 20 L 16.597656 53.5 C 16.898438 56.101563 19 58 21.597656 58 L 46.402344 58 C 49 58 51.101563 56.101563 51.402344 53.5 L 54.902344 20 L 55 20 C 56.699219 20 58 18.699219 58 17 L 58 11 C 58 9.300781 56.699219 8 55 8 L 43.5 8 L 40.402344 3.300781 C 39.902344 2.5 38.902344 2 37.902344 2 Z M 30.097656 4 L 38 4 C 38.300781 4 38.601563 4.199219 38.800781 4.398438 L 41.097656 8 L 26.902344 8 L 29.199219 4.398438 C 29.398438 4.199219 29.699219 4 30.097656 4 Z M 13 10 L 55 10 C 55.601563 10 56 10.398438 56 11 L 56 17 C 56 17.601563 55.601563 18 55 18 L 13 18 C 12.398438 18 12 17.601563 12 17 L 12 11 C 12 10.398438 12.398438 10 13 10 Z M 16 12 C 15.398438 12 15 12.398438 15 13 L 15 15 C 15 15.601563 15.398438 16 16 16 C 16.601563 16 17 15.601563 17 15 L 17 13 C 17 12.398438 16.601563 12 16 12 Z M 21 12 C 20.398438 12 20 12.398438 20 13 L 20 15 C 20 15.601563 20.398438 16 21 16 C 21.601563 16 22 15.601563 22 15 L 22 13 C 22 12.398438 21.601563 12 21 12 Z M 26 12 C 25.398438 12 25 12.398438 25 13 L 25 15 C 25 15.601563 25.398438 16 26 16 C 26.601563 16 27 15.601563 27 15 L 27 13 C 27 12.398438 26.601563 12 26 12 Z M 31 12 C 30.398438 12 30 12.398438 30 13 L 30 15 C 30 15.601563 30.398438 16 31 16 C 31.601563 16 32 15.601563 32 15 L 32 13 C 32 12.398438 31.601563 12 31 12 Z M 37 12 C 36.398438 12 36 12.398438 36 13 L 36 15 C 36 15.601563 36.398438 16 37 16 C 37.601563 16 38 15.601563 38 15 L 38 13 C 38 12.398438 37.601563 12 37 12 Z M 42 12 C 41.398438 12 41 12.398438 41 13 L 41 15 C 41 15.601563 41.398438 16 42 16 C 42.601563 16 43 15.601563 43 15 L 43 13 C 43 12.398438 42.601563 12 42 12 Z M 47 12 C 46.398438 12 46 12.398438 46 13 L 46 15 C 46 15.601563 46.398438 16 47 16 C 47.601563 16 48 15.601563 48 15 L 48 13 C 48 12.398438 47.601563 12 47 12 Z M 52 12 C 51.398438 12 51 12.398438 51 13 L 51 15 C 51 15.601563 51.398438 16 52 16 C 52.601563 16 53 15.601563 53 15 L 53 13 C 53 12.398438 52.601563 12 52 12 Z M 15.097656 20 L 52.902344 20 L 49.402344 53.300781 C 49.199219 54.800781 48 56 46.402344 56 L 21.597656 56 C 20.097656 56 18.800781 54.800781 18.597656 53.300781 Z M 34 25 C 33.398438 25 33 25.398438 33 26 L 33 46 C 33 46.601563 33.398438 47 34 47 C 34.601563 47 35 46.601563 35 46 L 35 26 C 35 25.398438 34.601563 25 34 25 Z M 25 25.097656 C 24.398438 25.097656 24 25.597656 24.097656 26.097656 L 25.097656 46.097656 C 25 46.597656 25.5 47 26 47 C 26.601563 47 27 46.5 27 46 L 26 26 C 26 25.398438 25.5 25 25 25.097656 Z M 43.097656 25.097656 C 42.5 25.097656 42.097656 25.5 42.097656 26 L 41.097656 46 C 41 46.5 41.398438 47 42 47 C 42.601563 47 43 46.597656 43 46.097656 L 44 26.097656 C 44 25.5 43.597656 25.097656 43.097656 25.097656 Z M 23 52 C 22.398438 52 22 52.398438 22 53 C 22 53.601563 22.398438 54 23 54 L 37 54 C 37.601563 54 38 53.601563 38 53 C 38 52.398438 37.601563 52 37 52 Z M 41 52 C 40.398438 52 40 52.398438 40 53 C 40 53.601563 40.398438 54 41 54 L 45 54 C 45.601563 54 46 53.601563 46 53 C 46 52.398438 45.601563 52 45 52 Z"></path>
+                                    </svg>
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </section>
+        </div>
+    </div>
+    <script>
+        function ajustarFontePorCaracteres(card) {
+            const h2 = card.querySelector('h2'); // Seleciona o <h2> dentro do cursoCard
+            if (!h2) return;
+
+            const texto = h2.textContent.trim(); // Obtém o texto dentro do <h2>
+            const maxFontSize = 4; // Tamanho máximo da fonte (em vh)
+            const minFontSize = 2; // Tamanho mínimo da fonte (em vh)
+            const maxChars = 50; // Quantidade de caracteres antes de diminuir a fonte
+
+            // Calcula o tamanho da fonte com base na quantidade de caracteres
+            let fontSize = maxFontSize - (texto.length / maxChars) * (maxFontSize - minFontSize);
+            fontSize = Math.max(fontSize, minFontSize);
+
+            h2.style.fontSize = `${fontSize}vh`;
+        }
+
+        // Aplicar a lógica em todos os cartões
+        function ajustarFontesNosCartoes() {
+            const cursoCards = document.querySelectorAll('.cursoCard'); // Seleciona todos os cursoCard
+            cursoCards.forEach(card => ajustarFontePorCaracteres(card)); // Ajusta o <h2> em cada cartão
+        }
+
+        // Executar quando a página carregar
+        window.addEventListener('DOMContentLoaded', ajustarFontesNosCartoes);
+
+        // (Opcional) Reajustar as fontes quando a janela for redimensionada
+        window.addEventListener('resize', ajustarFontesNosCartoes);
+    </script>
+    <script>
+    function filterCursos() {
+        const input = document.getElementById('search-input');
+        const filter = input.value.toLowerCase();
+        const cursoList = document.getElementById('curso-list');
+        const cursos = cursoList.getElementsByClassName('cursoCard');
+
+        for (let i = 0; i < cursos.length; i++) {
+            const cursoNome = cursos[i].getAttribute('data-nome');
+            const cursoTipo = cursos[i].getAttribute('data-tipo');
+
+            const nomeMatch = cursoNome.includes(filter);
+            const tipoMatch = cursoTipo.includes(filter);
+
+            if (nomeMatch || tipoMatch) {
+                cursos[i].style.display = ''; // Mostra o curso
+
+                const titleElement = cursos[i].querySelector('h2');
+                const tipoElement = cursos[i].querySelector('p');
+
+                titleElement.innerHTML = highlightText(titleElement.textContent, filter);
+                tipoElement.innerHTML = highlightText(tipoElement.textContent, filter);
+            } else {
+                cursos[i].style.display = 'none'; // Oculta o curso
+            }
+        }
+    }
+
+    function highlightText(text, search) {
+        const regex = new RegExp(`(${search})`, 'gi'); // Expressão regular para encontrar as correspondências
+        return text.replace(regex, '<span class="highlight">$1</span>'); // Envolve as correspondências com <span>
+    }
+    </script>
+    <script>
+        let tagsSelecionadas = [];
+
+        function filtrarPorTag() {
+            const tagSelecionada = document.getElementById('tagSelect').value.toLowerCase().trim();
+            const cursos = document.getElementsByClassName('cursoCard');
+
+            // Se uma tag for selecionada e ainda não estiver na lista, adiciona a tag
+            if (tagSelecionada && !tagsSelecionadas.includes(tagSelecionada)) {
+                tagsSelecionadas.push(tagSelecionada);
+                addTagToSelection(tagSelecionada); // Adiciona à lista de tags na tela
+            }
+
+            // Caso a lista de tags esteja vazia, exibe todos os cursos
+            if (tagsSelecionadas.length === 0) {
+                for (let i = 0; i < cursos.length; i++) {
+                    cursos[i].style.display = ''; // Mostra todos os cursos
+                }
+                return; // Sai da função para evitar a lógica de filtragem
+            }
+
+            // Filtra os cursos para mostrar apenas os que têm alguma das tags selecionadas
+            for (let i = 0; i < cursos.length; i++) {
+                const tags = cursos[i].getAttribute('data-tags')
+                    .split(',')
+                    .map(tag => tag.trim().toLowerCase());
+
+                // Verifica se o curso possui pelo menos uma das tags selecionadas
+                const showCourse = tagsSelecionadas.some(tag => tags.includes(tag));
+
+                if (showCourse) {
+                    cursos[i].style.display = ''; // Mostra o curso
+                } else {
+                    cursos[i].style.display = 'none'; // Oculta o curso
+                }
+            }
+
+            // Limpa o campo de entrada de tags
+            document.getElementById('tagSelect').value = "";
+        }
+
+        function isTagAlreadySelected(tag) {
+            // Verifica se a tag já está na lista
+            return tagsSelecionadas.includes(tag);
+        }
+
+        function addTagToSelection(tag) {
+            // Cria um novo elemento de lista (div) para a tag selecionada
+            const tagElement = document.createElement('div');
+            tagElement.classList.add('selected-tag');
+            tagElement.dataset.tag = tag;
+            tagElement.innerHTML = `${capitalize(tag)} <span><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" class="bi bi-x-lg" viewBox="0 0 16 16">
+  <path stroke="currentColor" d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
+</svg></span>`;
+
+            // Adiciona a funcionalidade de remoção ao clicar no 'x'
+            tagElement.querySelector('span').addEventListener('click', function () {
+                removeTagFromSelection(tag);
+            });
+
+            // Adiciona o elemento à lista de tags selecionadas
+            document.getElementById('selected-tags-container').appendChild(tagElement);
+        }
+
+        function removeTagFromSelection(tag) {
+            // Remove a tag do array de tags selecionadas
+            tagsSelecionadas = tagsSelecionadas.filter(t => t !== tag);
+
+            // Remove a tag da lista exibida na tela
+            const tagElement = document.querySelector(`.selected-tag[data-tag="${tag}"]`);
+            if (tagElement) {
+                tagElement.remove();
+            }
+
+            // Refiltra os cursos com as tags restantes
+            filtrarPorTag();
+        }
+
+        function capitalize(str) {
+            // Função para capitalizar a primeira letra da tag
+            return str.charAt(0).toUpperCase() + str.slice(1);
+        }
+
+    </script>
+{% endblock %}

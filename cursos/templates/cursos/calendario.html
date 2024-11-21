@@ -1,0 +1,547 @@
+{% extends 'base.html' %}
+
+{% block title %}Cursos{% endblock %}
+
+{% load static  %}
+
+{% block content %}
+    {% if loginRealizado %}
+    <div class="CALENDARIO" id="calendario">
+        <a href="{% url 'home' %}">
+            <svg xmlns="http://www.w3.org/2000/svg" class="seta" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
+            </svg>
+        </a>
+        <div class="containerCalendario">
+            <div class="calendarioContainer">
+                <div class="calendar-container">
+                    <div class="calendar-header">
+                        <button id="prevYear">&lt;&lt;</button>
+                        <button id="prevMonth">&lt;</button>
+                        <span id="monthYear"></span>
+                        <button id="nextMonth">&gt;</button>
+                        <button id="nextYear">&gt;&gt;</button>
+                    </div>
+                    <table class="calendar-table">
+                        <thead>
+                            <tr>
+                                <th>Dom</th>
+                                <th>Seg</th>
+                                <th>Ter</th>
+                                <th>Qua</th>
+                                <th>Qui</th>
+                                <th>Sex</th>
+                                <th>Sáb</th>
+                            </tr>
+                        </thead>
+                        <tbody id="calendarBody"></tbody>
+                    </table>
+
+                    <div id="viewEventPopup" class="popup">
+                        <div class="popup-content">
+                            <a href="{% url 'calendario' %}">
+                                <span class="close-btn">&times;</span>
+                            </a>
+                            <h2>Eventos</h2>
+                            <p id="viewEventDate"></p>
+                            <div id="viewEventTitle"></div>
+                            <button id="addEvent">Criar Evento</button>
+                        </div>
+                    </div>
+
+                    <div id="eventPopup" class="popup">
+                        <div class="popup-content">
+                            <a href="{% url 'calendario' %}">
+                                <span class="close-btn">&times;</span>
+                            </a>
+                            <h2>Gerenciar Evento</h2>
+                            <p id="eventDate" ></p>
+                                <form id="eventForm" method="post" >
+                                    {% csrf_token %}
+                                    <input type="text" id="eventTitle" placeholder="Digite o título do evento" name="titulo">
+                                    <button type="button" id="saveEvent">Salvar Evento</button>
+                                    <button type="button" id="deleteSingleEvent">Excluir Evento</button>
+                                </form></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+         <script>
+            const monthNames = [
+                "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
+                "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
+            ];
+
+            const today = new Date();
+            let currentMonth = today.getMonth();
+            let currentYear = today.getFullYear();
+            let events = {}; // Mantenha uma estrutura de eventos
+
+            const monthYearDisplay = document.getElementById('monthYear');
+            const calendarBody = document.getElementById('calendarBody');
+            const eventPopup = document.getElementById('eventPopup');
+            const eventDateDisplay = document.getElementById('eventDate');
+            const eventTitleInput = document.getElementById('eventTitle');
+            const saveEventBtn = document.getElementById('saveEvent');
+            const deleteSingleEventBtn = document.getElementById('deleteSingleEvent');
+            const addEventBtn = document.getElementById('addEvent');
+            const viewEventPopup = document.getElementById('viewEventPopup');
+            const viewEventDateDisplay = document.getElementById('viewEventDate');
+            const viewEventTitleDisplay = document.getElementById('viewEventTitle');
+            const loginRealizado = {% if loginRealizado %} true {% else %} false {% endif %};
+
+            let selectedDate;
+            let selectedEventId = null;
+            let selectedEventIndex = null;
+
+            document.getElementById('prevMonth').addEventListener('click', () => changeMonth(-1));
+            document.getElementById('nextMonth').addEventListener('click', () => changeMonth(1));
+            document.getElementById('prevYear').addEventListener('click', () => changeYear(-1));
+            document.getElementById('nextYear').addEventListener('click', () => changeYear(1));
+            document.querySelector('.close-btn').addEventListener('click', closePopup);
+            saveEventBtn.addEventListener('click', saveEvent);
+            deleteSingleEventBtn.addEventListener('click', deleteSingleEvent);
+            addEventBtn.addEventListener('click', openAddPopup);
+
+          document.addEventListener('DOMContentLoaded', (event) => {
+            loadEventsFromDatabase(); // Carrega eventos quando a página é carregada
+            updateCalendar(currentMonth, currentYear);
+        });
+            // Função que carrega os eventos do banco de dados
+        function loadEventsFromDatabase() {
+            // Faz uma requisição para o servidor para carregar os eventos
+            fetch('/carregar-eventos/')
+                .then(response => response.json())  // Converte a resposta para JSON
+                .then(data => {
+                    console.log('Loaded events:', data.events);  // Exibe os eventos carregados no console
+                    events = {};  // Reinicializa o objeto que armazena os eventos
+                    // Itera sobre os eventos retornados, agrupando-os por data
+                    Object.entries(data.events).forEach(([date, eventList]) => {
+                        console.log(`Processing date: ${date}`);  // Exibe a data sendo processada
+                        // Para cada data, cria um novo array de eventos com título e id
+                        events[date] = eventList.map(event => ({
+                            title: event.title,  // Título do evento
+                            id: event.id  // ID do evento
+                        }));
+                    });
+                    updateCalendar(currentMonth, currentYear);  // Atualiza o calendário com os eventos carregados
+                    console.log('Updated calendar with events');  // Exibe no console que o calendário foi atualizado
+                })
+                .catch(error => console.error('Erro ao carregar eventos:', error));  // Exibe erro caso a requisição falhe
+        }
+        
+        // Função que abre o popup de visualização de eventos de uma data específica
+        function openViewPopup(date) {
+            selectedDate = date;  // Armazena a data selecionada
+            viewEventDateDisplay.textContent = `Data: ${date}`;  // Exibe a data no display do popup
+            viewEventTitleDisplay.innerHTML = '';  // Limpa a lista de eventos no popup
+        
+            // Verifica se há eventos para a data selecionada
+            if (events[date]) {
+                // Para cada evento na data, cria um elemento de visualização
+                events[date].forEach((event, index) => {
+                    const eventElement = document.createElement('div');  // Cria um elemento para o evento
+                    eventElement.textContent = event.title;  // Define o título do evento
+        
+                    // Cria um ícone de edição para o evento
+                    const editIcon = document.createElement('span');
+                    editIcon.innerHTML = '✏️';  // Símbolo de lápis
+                    editIcon.style.cursor = 'pointer';  // Define o cursor como pointer para indicar que é clicável
+                    editIcon.style.marginLeft = '10px';  // Adiciona uma margem ao ícone
+                    // Adiciona um ouvinte de evento para abrir o popup de edição
+                    editIcon.addEventListener('click', () => openEditPopup(date, index));
+        
+                    eventElement.appendChild(editIcon);  // Adiciona o ícone de edição ao elemento do evento
+                    viewEventTitleDisplay.appendChild(eventElement);  // Adiciona o evento à lista de eventos no popup
+                });
+            } else {
+                // Se não houver eventos para a data, exibe uma mensagem
+                viewEventTitleDisplay.textContent = 'Nenhum evento para esta data.';
+            }
+            viewEventPopup.style.display = 'block';  // Exibe o popup de visualização de eventos
+        }
+        
+        // Função que abre o popup de adição de evento
+        function openAddPopup() {
+            selectedEventIndex = null;  // Não há evento selecionado, pois é um novo evento
+            eventTitleInput.value = '';  // Limpa o campo de título do evento
+            eventDateDisplay.textContent = `Criando evento para: ${selectedDate}`;  // Exibe a data selecionada para o novo evento
+            eventPopup.style.display = 'block';  // Exibe o popup de adição de evento
+        }
+
+            function openEditPopup(date, eventIndex) {
+                selectedDate = date;
+                selectedEventIndex = eventIndex; // Salva o índice do evento para edição
+                const event = events[date][eventIndex];
+                selectedEventId = event.id; // Armazena o ID do evento
+
+                eventDateDisplay.textContent = `Editando evento em: ${date}`;
+                eventTitleInput.value = event.title; // Preenche o título do evento
+                eventPopup.style.display = 'block';
+            }
+
+           // Função que salva ou edita um evento
+            function saveEvent() {
+                // Pega o título do evento do campo de entrada e remove espaços em branco
+                const eventTitle = eventTitleInput.value.trim();
+            
+                // Se o título estiver vazio, exibe um alerta e retorna sem salvar
+                if (!eventTitle) {
+                    alert('O título do evento não pode estar vazio.');
+                    return;
+                }
+            
+                // Converte a data selecionada em ano, mês e dia a partir da string "AAAA-MM-DD"
+                const [year, month, day] = selectedDate.split('-').map(Number);
+            
+                // Verifica se está editando um evento existente (selectedEventIndex != null)
+                if (selectedEventIndex !== null) {
+                    // Se for um evento existente, faz uma requisição PUT para atualizar o evento
+                    fetch(`/editar-evento/${selectedEventId}/`, {
+                        method: 'PUT',  // Método HTTP para edição
+                        headers: {
+                            'Content-Type': 'application/json',  // Tipo de conteúdo sendo enviado
+                            'X-CSRFToken': getCookie('csrftoken'),  // Token CSRF para segurança
+                        },
+                        body: JSON.stringify({
+                            idCalen: selectedEventId,  // Inclui o ID do evento
+                            titulo: eventTitle,  // Novo título do evento
+                            dia: day,  // Dia do evento
+                            mes: month,  // Mês do evento
+                            ano: year,  // Ano do evento
+                        })
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            // Se a resposta for bem-sucedida, recarrega os eventos e o calendário
+                            loadEventsFromDatabase();
+                            updateCalendar(currentMonth, currentYear);
+                            closePopup();  // Fecha o popup de edição
+                        } else {
+                            // Se a resposta falhar, exibe uma mensagem de erro
+                            alert('Erro ao editar evento: ' + response.statusText);
+                        }
+                    })
+                    .catch(error => {
+                        // Captura erros de rede ou outros erros e exibe uma mensagem
+                        console.error('Erro ao editar evento:', error);
+                        alert('Erro ao editar evento.');
+                    });
+                } else {
+                    // Caso seja um evento novo, faz uma requisição POST para criar o evento
+                    fetch('/criar-evento/', {
+                        method: 'POST',  // Método HTTP para criação
+                        headers: {
+                            'Content-Type': 'application/json',  // Tipo de conteúdo sendo enviado
+                            'X-CSRFToken': getCookie('csrftoken'),  // Token CSRF para segurança
+                        },
+                        body: JSON.stringify({
+                            titulo: eventTitle,  // Título do evento
+                            dia: day,  // Dia do evento
+                            mes: month,  // Mês do evento
+                            ano: year,  // Ano do evento
+                        })
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            // Se a resposta for bem-sucedida, recarrega os eventos e o calendário
+                            loadEventsFromDatabase();
+                            updateCalendar(currentMonth, currentYear);
+                            closePopup();  // Fecha o popup de criação
+                        } else {
+                            // Se a resposta falhar, exibe uma mensagem de erro
+                            alert('Erro ao criar evento: ' + response.statusText);
+                        }
+                    })
+                    .catch(error => {
+                        // Captura erros de rede ou outros erros e exibe uma mensagem
+                        console.error('Erro ao criar evento:', error);
+                        alert('Erro ao criar evento.');
+                    });
+                }
+            }
+
+         // Função que exclui um único evento
+            function deleteSingleEvent() {
+                // Verifica se há um evento selecionado para ser excluído
+                if (selectedEventId) {
+                    // Faz uma requisição PUT para excluir o evento
+                    fetch(`/excluir-evento/${selectedEventId}/`, {
+                        method: 'PUT',  // Método HTTP para exclusão
+                        headers: {
+                            'Content-Type': 'application/json',  // Tipo de conteúdo sendo enviado
+                            'X-CSRFToken': getCookie('csrftoken'),  // Token CSRF para segurança
+                        },
+                        body: JSON.stringify({
+                            idCalen: selectedEventId,  // Inclui o ID do evento a ser excluído
+                        })
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            // Se a resposta for bem-sucedida, recarrega os eventos e o calendário
+                            loadEventsFromDatabase();
+                            updateCalendar(currentMonth, currentYear);
+                            closePopup();  // Fecha o popup de visualização
+                        } else {
+                            // Se a resposta falhar, exibe uma mensagem de erro
+                            alert('Erro ao editar evento: ' + response.statusText);
+                        }
+                    })
+                    .catch(error => {
+                        // Captura erros de rede ou outros erros e exibe uma mensagem
+                        console.error('Erro ao editar evento:', error);
+                        alert('Erro ao editar evento.');
+                    });
+                }
+            }
+
+
+            function changeMonth(diff) {
+                currentMonth += diff;
+                if (currentMonth < 0) {
+                    currentMonth = 11;
+                    currentYear--;
+                } else if (currentMonth > 11) {
+                    currentMonth = 0;
+                    currentYear++;
+                }
+                updateCalendar(currentMonth, currentYear); // Atualiza o calendário
+            }
+
+            function changeYear(diff) {
+                currentYear += diff;
+                updateCalendar(currentMonth, currentYear); // Atualiza o calendário
+            }
+
+            function updateCalendar(month, year) {
+                calendarBody.innerHTML = ''; // Limpa o corpo da tabela antes de atualizar
+                const firstDay = new Date(year, month).getDay();
+                const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+                let date = 1;
+
+                for (let i = 0; i < 6; i++) {
+                    const row = document.createElement('tr');
+
+                    for (let j = 0; j < 7; j++) {
+                        const cell = document.createElement('td');
+
+                        if (i === 0 && j < firstDay) {
+                            const emptyCell = document.createElement('td');
+                            row.appendChild(emptyCell);
+                        } else if (date > daysInMonth) {
+                            break;
+                        } else {
+                            const cellDate = `${year}-${String(month + 1).padStart(2, '0')}-${String(date).padStart(2, '0')}`;
+                            cell.textContent = date;
+
+                            if (events[cellDate]) {
+                                cell.classList.add('event-day'); // Adiciona classe se houver eventos
+                            }
+
+                            cell.addEventListener('click', () => openViewPopup(cellDate));
+                            row.appendChild(cell);
+                            date++;
+                        }
+                    }
+
+                    calendarBody.appendChild(row);
+                }
+
+                monthYearDisplay.textContent = `${monthNames[month]} ${year}`;
+            }
+
+
+            function closePopup() {
+                eventPopup.style.display = 'none';
+                viewEventPopup.style.display = 'none';
+            }
+
+            function getCookie(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    const cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i].trim();
+                        // Verifica se este cookie começa com o nome fornecido
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+        </script>
+
+    {% else %}
+
+    <div class="CALENDARIO" id="calendario">
+        <a href="{% url 'home' %}">
+            <svg xmlns="http://www.w3.org/2000/svg" class="seta" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
+            </svg>
+        </a>
+        <div class="containerCalendario">
+            <div class="calendarioContainer">
+                <div class="calendar-container">
+                    <div class="calendar-header">
+                        <button id="prevYear">&lt;&lt;</button>
+                        <button id="prevMonth">&lt;</button>
+                        <span id="monthYear"></span>
+                        <button id="nextMonth">&gt;</button>
+                        <button id="nextYear">&gt;&gt;</button>
+                    </div>
+                    <table class="calendar-table">
+                        <thead>
+                            <tr>
+                                <th>Dom</th>
+                                <th>Seg</th>
+                                <th>Ter</th>
+                                <th>Qua</th>
+                                <th>Qui</th>
+                                <th>Sex</th>
+                                <th>Sáb</th>
+                            </tr>
+                        </thead>
+                        <tbody id="calendarBody"></tbody>
+                    </table>
+
+                    <div id="viewEventPopup" class="popup">
+                        <div class="popup-content">
+                            <a href="{% url 'calendario' %}">
+                                <span class="close-btn">&times;</span>
+                            </a>
+                            <h2>Eventos</h2>
+                            <p id="viewEventDate"></p>
+                            <br>
+                            <div id="viewEventTitle"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>
+        <script>
+            const monthNames = [
+                "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
+                "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
+            ];
+
+            const today = new Date();
+            let currentMonth = today.getMonth();
+            let currentYear = today.getFullYear();
+            let events = {}; // Mantenha uma estrutura de eventos
+
+            const monthYearDisplay = document.getElementById('monthYear');
+            const calendarBody = document.getElementById('calendarBody');
+            const viewEventPopup = document.getElementById('viewEventPopup');
+            const viewEventDateDisplay = document.getElementById('viewEventDate');
+            const viewEventTitleDisplay = document.getElementById('viewEventTitle');
+
+            document.getElementById('prevMonth').addEventListener('click', () => changeMonth(-1));
+            document.getElementById('nextMonth').addEventListener('click', () => changeMonth(1));
+            document.getElementById('prevYear').addEventListener('click', () => changeYear(-1));
+            document.getElementById('nextYear').addEventListener('click', () => changeYear(1));
+            document.querySelector('.close-btn').addEventListener('click', closePopup);
+
+            document.addEventListener('DOMContentLoaded', (event) => {
+                loadEventsFromDatabase(); // Carrega eventos quando a página é carregada
+                updateCalendar(currentMonth, currentYear);
+            });
+
+            function loadEventsFromDatabase() {
+                fetch('/carregar-eventos/')
+                    .then(response => response.json())
+                    .then(data => {
+                        events = {};
+                        Object.entries(data.events).forEach(([date, eventList]) => {
+                            events[date] = eventList.map(event => ({
+                                title: event.title,
+                                id: event.id
+                            }));
+                        });
+                        updateCalendar(currentMonth, currentYear);
+                    })
+                    .catch(error => console.error('Erro ao carregar eventos:', error));
+            }
+
+            function openViewPopup(date) {
+                viewEventDateDisplay.textContent = `Data: ${date}`;
+                viewEventTitleDisplay.innerHTML = '';
+
+                if (events[date]) {
+                    events[date].forEach(event => {
+                        const eventElement = document.createElement('div');
+                        eventElement.textContent = event.title;
+                        viewEventTitleDisplay.appendChild(eventElement);
+                    });
+                } else {
+                    viewEventTitleDisplay.textContent = 'Nenhum evento para esta data.';
+                }
+                viewEventPopup.style.display = 'block';
+            }
+
+            function changeMonth(diff) {
+                currentMonth += diff;
+                if (currentMonth < 0) {
+                    currentMonth = 11;
+                    currentYear--;
+                } else if (currentMonth > 11) {
+                    currentMonth = 0;
+                    currentYear++;
+                }
+                updateCalendar(currentMonth, currentYear); // Atualiza o calendário
+            }
+
+            function changeYear(diff) {
+                currentYear += diff;
+                updateCalendar(currentMonth, currentYear); // Atualiza o calendário
+            }
+
+            function updateCalendar(month, year) {
+                calendarBody.innerHTML = ''; // Limpa o corpo da tabela antes de atualizar
+                const firstDay = new Date(year, month).getDay();
+                const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+                let date = 1;
+
+                for (let i = 0; i < 6; i++) {
+                    const row = document.createElement('tr');
+
+                    for (let j = 0; j < 7; j++) {
+                        const cell = document.createElement('td');
+
+                        if (i === 0 && j < firstDay) {
+                            const emptyCell = document.createElement('td');
+                            row.appendChild(emptyCell);
+                        } else if (date > daysInMonth) {
+                            break;
+                        } else {
+                            const cellDate = `${year}-${String(month + 1).padStart(2, '0')}-${String(date).padStart(2, '0')}`;
+                            cell.textContent = date;
+
+                            if (events[cellDate]) {
+                                cell.classList.add('event-day'); // Adiciona classe se houver eventos
+                            }
+
+                            cell.addEventListener('click', () => openViewPopup(cellDate));
+                            row.appendChild(cell);
+                            date++;
+                        }
+                    }
+
+                    calendarBody.appendChild(row);
+                }
+
+                monthYearDisplay.textContent = `${monthNames[month]} ${year}`;
+            }
+
+            function closePopup() {
+                viewEventPopup.style.display = 'none';
+            }
+        </script>
+    </div>
+    {% endif %}
+{%  endblock %}

@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block title %}historia{% endblock %}
+
+{% load static  %}
+
+{% block content %}
+
+        <div id="historia" class="divHistoria">
+            <a href="{% url 'home' %}">
+                <svg xmlns="http://www.w3.org/2000/svg" class="seta" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
+                </svg>
+            </a>
+            <div class="fundoCarrosel">
+                <section class="slider">
+                    <input type="radio" name="slide" id="slide1" checked>
+                    <input type="radio" name="slide" id="slide2">
+                    <input type="radio" name="slide" id="slide3">
+                    <input type="radio" name="slide" id="slide4">
+
+                    <div class="slider-content">
+                        <div class="slider-item">
+                            <img src="{% static 'img/senai-antiga.jpg' %}" alt="Senai Antiga">
+                        </div>
+                        <div class="slider-item">
+                            <div class="imagemEspecifica">
+                                <img src="{% static 'img/senairp.jpg' %}" alt="Senai Moderna">
+                            </div>
+                        </div>
+                        <div class="slider-item">
+                            <div class="imagemEspecifica">
+                                <img src="{% static 'img/hawks.jpg' %}"alt="Educação Senai">
+                            </div>
+                        </div>
+                        <div class="slider-item">
+                            <div class="imagemEspecifica">
+                                <img src="{% static 'img/curso-senai.jpg' %}" alt="Inovação Senai">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="navigation">
+                        <label for="slide1"></label>
+                        <label for="slide2"></label>
+                        <label for="slide3"></label>
+                        <label for="slide4"></label>
+                    </div>
+                </section>
+
+            </div>
+
+            <div class="imagemNumeroum">
+                <img class="img1" src="{% static 'img/senai-antiga.jpg' %}">
+            </div>
+            <div class="primeiraEscrita">
+                <h3>
+                    O Senai foi criado em 1942 para qualificar mão de obra, evoluiu junto com o setor, tornando-se referência em educação profissional e tecnológica e inovação. Em oito décadas, a rede de escolas e institutos espalhados pelo país multiplicou o número de unidades, ampliou o portfólio de cursos e serviços para as 28 áreas industriais e alcançou um nível de excelência, da infraestrutura ao corpo técnico.
+                </h3>
+            </div>
+
+            <div class="segundaEscrita">
+                <div>
+                    <h3 class="letradois">
+                        Em 3 de fevereiro de 1694, era inaugurado em São José do Rio Preto, o Serviço Nacional de Aprendizagem Industrial (Senai). A escola leva o nome do diretor do Senai de São Paulo, Antônio Devisate. Segundo verbete do dicionário rio-pretense, de Leá Arantes, a história começou por volta de 1955, quando o então Presidente da Associação Comercial e Industrial de Rio Preto, José Beolchi, encontrou-se em São Paulo com Devisate e com Hebert de Arruda Pereira, diretor da Fiesp à época. O encontro foi matéria de destaque do jornal Diário da Região, em 14 de fevereiro de 1956.
+                    </h3>
+                </div>
+            </div>
+            <div class="imagemNumerodois">
+                    <img class="img" src="{% static 'img/senairp.jpg' %}">
+            </div>
+                <section class="video-section">
+                <video class="videozinho" controls autoplay muted>
+                    <source class="video" src="{% static 'img/Dia da Indústria!.mp4' %}" type="video/mp4">
+                </video>
+            </section>
+        </div>
+{% endblock %}
