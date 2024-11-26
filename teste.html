@@ -74,6 +74,29 @@
     .containerCursosTrilha{
       
     }
+    .containerCursosTrilha {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px; /* Espaço entre os elementos */
+      padding: 16px;
+      text-align: center;
+    }
+
+    .etapaContainer {
+      display: flex;
+      justify-content: start;
+      flex-direction: column;
+    }
+    .block{
+      max-width: 40%; /* Limita a largura máxima */
+      width: 100%; /* Adapta à largura da célula do grid */
+      background-color: #f0f0f0;
+      padding: 16px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      text-align: center;
+      margin: 5vh auto 5vh auto;
+    }
   </style>
 </head>
 <body>
@@ -92,8 +115,20 @@
       <div class="etapaContainer">
         <div class="block">aiwuefh</div>
         <div class="block">weiuhf</div>
-        <div class="block">eifuh</div>
-        <div class="block">weilfh</div>
+        <div class="block">aiwuefh</div>
+        <div class="block">weiuhf</div>
+      </div>
+      <div class="etapaContainer">
+        <div class="block">aiwuefh</div>
+        <div class="block">weiuhf</div>
+      </div>
+      <div class="etapaContainer">
+        <div class="block">aiwuefh</div>
+        <div class="block">weiuhf</div>
+      </div>
+      <div class="etapaContainer">
+        <div class="block">aiwuefh</div>
+        <div class="block">weiuhf</div>
       </div>
     </div>
   </div>

@@ -515,6 +515,7 @@ from django.http import HttpResponseNotFound
 from django.db import connection
 import json
 
+
 def cursosTrilha(request, idTrilha):
     try:
         # Consulta a trilha com o id especificado
@@ -537,78 +538,58 @@ def cursosTrilha(request, idTrilha):
             etapas_json = json.loads(trilha[4])  # As etapas em formato JSON
             imagem_trilha = trilha[5]
 
-            # Lista para armazenar os cursos e trilhas que serão exibidos
+            # Organiza os itens por etapas
             etapas_lista = []
-
-            # Variáveis para cursos e trilhas
-            cursos = []
-            trilhas = []
-
-            # Itera pelas etapas
             for etapa in etapas_json:
-                cursos_da_etapa = []
-                trilhas_da_etapa = []
+                etapa_itens = {'numero': etapa.get('etapa'), 'itens': []}
 
-                # Itera pelos cursos da etapa
-                for curso_id in etapa.get("cursos", []):
-                    with connection.cursor() as cursor:
-                        query_curso = """
-                            SELECT id_curso, nome_curso, descricao_curso, imagem_curso, horas_curso,statusPag_curso
-                            FROM Cursos WHERE id_curso = %s;
-                        """
-                        cursor.execute(query_curso, [curso_id])
-                        curso = cursor.fetchone()
+                # Adiciona cursos à etapa
+                curso_ids = etapa.get("cursos", [])
+                if curso_ids:
+                    query_curso = """
+                        SELECT id_curso, nome_curso, descricao_curso, imagem_curso, horas_curso, statusPag_curso
+                        FROM Cursos WHERE id_curso IN %s;
+                    """
+                    cursor.execute(query_curso, [tuple(curso_ids)])
+                    for curso in cursor.fetchall():
+                        etapa_itens['itens'].append({
+                            'tipo': 'curso',
+                            'id': curso[0],
+                            'nome_curso': curso[1],
+                            'descricao_curso': curso[2],
+                            'imagem_curso': curso[3],
+                            'horas_curso': curso[4],
+                            'statusPag_curso': curso[5]
+                        })
 
-                        if curso:
-                            curso_dict = {
-                                'id_curso': curso[0],
-                                'nome_curso': curso[1],
-                                'descricao_curso': curso[2],
-                                'imagem_curso': curso[3],
-                                'horas_curso': curso[4],
-                                'statusPag_curso': curso[5]
-                            }
-                            cursos_da_etapa.append(curso_dict)
-                            # Adiciona os cursos da etapa à lista de cursos gerais
-                            cursos.append(curso_dict)
+                # Adiciona trilhas à etapa
+                trilha_ids = etapa.get("trilhas", [])
+                if trilha_ids:
+                    query_trilha = """
+                        SELECT idTrilha, nomeTri, cargaMinTri, cargaMaxTri, imageTri
+                        FROM Trilha WHERE idTrilha IN %s;
+                    """
+                    cursor.execute(query_trilha, [tuple(trilha_ids)])
+                    for sub_trilha in cursor.fetchall():
+                        etapa_itens['itens'].append({
+                            'tipo': 'trilha',
+                            'id': sub_trilha[0],
+                            'nome_trilha': sub_trilha[1],
+                            'cargaMinTri': sub_trilha[2],
+                            'cargaMaxTri': sub_trilha[3],
+                            'imageTri': sub_trilha[4]
+                        })
 
-                # Itera pelas trilhas da etapa
-                for trilha_id in etapa.get("trilhas", []):
-                    with connection.cursor() as cursor:
-                        query_trilha = """
-                            SELECT idTrilha, nomeTri, cargaMinTri, cargaMaxTri, imageTri
-                            FROM Trilha WHERE idTrilha = %s;
-                        """
-                        cursor.execute(query_trilha, [trilha_id])
-                        trilha = cursor.fetchone()
+                etapas_lista.append(etapa_itens)
 
-                        if trilha:
-                            trilha_dict = {
-                                'id_trilha': trilha[0],
-                                'nome_trilha': trilha[1],
-                                'cargaMinTri': trilha[2],
-                                'cargaMaxTri': trilha[3],
-                                'imageTri': trilha[4],
-                            }
-                            trilhas_da_etapa.append(trilha_dict)
-                            # Adiciona as trilhas da etapa à lista de trilhas gerais
-                            trilhas.append(trilha_dict)
-
-                etapas_lista.append({
-                    'etapa': etapa["etapa"],
-                    'cursos': cursos_da_etapa,
-                    'trilhas': trilhas_da_etapa
-                })
-
+            # Renderiza o template
             return render(request, 'cursos/CursosTrilha.html', {
                 'nome_trilha': nome_trilha,
                 'descricao_trilha': descricao_trilha,
                 'carga_minima': carga_minima,
                 'carga_maxima': carga_maxima,
-                'etapas_lista': etapas_lista,
                 'imagem_trilha': imagem_trilha,
-                'cursos': cursos,  # Todos os cursos da trilha
-                'trilhas': trilhas  # Todas as trilhas da trilha
+                'etapas_lista': etapas_lista  # Organizado por etapas
             })
 
     except Exception as e:

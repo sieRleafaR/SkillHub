@@ -3,7 +3,7 @@
 let progressBarInterval;
 let indiceAtual = 0;
 let primeiraVezTrilhas = false
-let tempoRetorna = setTimeout(recarregarPagina, 5000)
+let tempoRetorna = setTimeout(recarregarPagina, 300000)
 
 // declarações fim
 

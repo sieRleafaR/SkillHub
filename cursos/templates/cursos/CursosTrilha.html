@@ -5,91 +5,36 @@
 {% load static %}
     
 {% block content %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/teste.css' %}">
     <div id="cursosTrilha" class="cursosTrilha">
-        <div class="textosTrilha">
-            <h1>Cursos Disponíveis</h1>
-            <h3>{{ nome_trilha }}</h3>
+        <div class="headerTrilhaDiv">
+            <div class="textHeader">
+                <h1>Nome da Trilha</h1>
+                <h4>Resumo da Trilha</h4>
+            </div>
+            <div class="legendaCursosTrilha">
+                <h2>Cursos</h2>
+                <h2>Trilhas</h2>
+            </div>
         </div>
-        <div class="containerInfoTrilha">
-            <div class="cursos">
-                <div class="linhaVertical" id="linhaVertical"></div>
-                <div class="containerCursosText">
-                    <div class="textoCursosCaixa">
-                        <h2>{{ nome_trilha }}</h2>
-                        <p>{{ descricao_trilha }}</p>
-                        <p>Carga Horária: {{ carga_minima }}h - {{ carga_maxima }}h</p>
-                    </div>
-
-                    {% for etapa in etapas_lista %}
-                        <div class="textoCursosCaixa">
-                            <h2>Etapa {{ etapa.etapa }}</h2>
-
-                            {% if etapa.cursos %}
-                                <p>Os cursos disponíveis nesta etapa são:
-                                    {% for curso in etapa.cursos %}
-                                        <a href="javascript:void(0);"
-                                           onclick="mostrarInformacoesCurso('{{ curso.id_curso }}', '{{ curso.nome_curso }}', '{{ curso.descricao_curso }}',
-                                                   '{{ curso.horas_curso }}', '{{ curso.statusPag_curso }}', '{{ curso.imagem_curso }}')">
-                                           {{ curso.nome_curso }}
-                                        </a>{% if not forloop.last %}, {% endif %}
-                                    {% endfor %}
-                                </p>
-                            {% endif %}
-
-                            {% if etapa.trilhas %}
-                                <p>As trilhas disponíveis nesta etapa são:
-                                    {% for trilha in etapa.trilhas %}
-                                        <a href="javascript:void(0);"
-                                           onclick="mostrarInformacoesTrilha('{{ trilha.id_trilha }}', '{{ trilha.nome_trilha }}', '{{ trilha.descricao_trilha }}',
-                                                   '{{ trilha.cargaMinTri }}', '{{ trilha.cargaMaxTri }}', '{{ trilha.imageTri }}')">
-                                           {{ trilha.nome_trilha }}
-                                        </a>{% if not forloop.last %}, {% endif %}
-                                    {% endfor %}
-                                </p>
+        <div class="containerCursosTrilha">
+            {% for etapa in etapas_lista %}
+                <div class="etapaContainer">
+                    <h2>Caminho {{ etapa.numero }}</h2>
+                    {% for item in etapa.itens %}
+                        <div class="block">
+                            {% if item.tipo == "curso" %}
+                                <p><strong>Curso:</strong> {{ item.nome_curso }}</p>
+                                <p>Descrição: {{ item.descricao_curso }}</p>
+                                <p>Horas: {{ item.horas_curso }}</p>
+                            {% elif item.tipo == "trilha" %}
+                                <p><strong>Trilha:</strong> {{ item.nome_trilha }}</p>
+                                <p>Carga Horária: {{ item.cargaMinTri }} - {{ item.cargaMaxTri }}</p>
                             {% endif %}
                         </div>
                     {% endfor %}
                 </div>
-            </div>
-            <div class="templateCursos">
-                <img src="{% static '/img/learning-bro.svg' %}" class="imagemStoryset" alt="Imagem da Trilha">
-                <div id="informacoes-cursos-trilhas">
-                    <div id="informacoes-imagem"></div>
-                    <div id="informacoes-nome"></div>
-                    <div id="informacoes-descricao"></div>
-                    <div id="informacoes-carga-horario"></div>
-                    <div id="informacoes-status"></div>
-                </div>
-            </div>
+            {% endfor %}
         </div>
     </div>
-    <script>
-        function mostrarInformacoesCurso(id, nome, descricao, carga_horas, status, imagem) {
-            const infoDiv = document.getElementById('informacoes-cursos-trilhas');
-            document.getElementById('informacoes-nome').innerHTML = nome;
-            document.getElementById('informacoes-descricao').innerHTML = descricao;
-            document.getElementById('informacoes-carga-horario').innerHTML = 'Carga Horária: ' + carga_horas + 'h';
-            document.getElementById('informacoes-status').innerHTML = 'Status: ' + status;
-            document.getElementById('informacoes-imagem').innerHTML = `<img src="{% static 'assets/cursos' %}${imagem}" alt="${imagem}">`;
-
-            // Adiciona a classe ativa para animação
-            infoDiv.classList.add('active');
-        }
-
-        // Função para mostrar informações da trilha
-        function mostrarInformacoesTrilha(id, nome, descricao, carga_minima, carga_maxima, imagem) {
-            const infoDiv = document.getElementById('informacoes-cursos-trilhas');
-            document.getElementById('informacoes-nome').innerHTML = nome;
-            document.getElementById('informacoes-descricao').innerHTML = descricao;
-            document.getElementById('informacoes-carga-horario').innerHTML = 'Carga Horária: ' + carga_minima + 'h - ' + carga_maxima + 'h';
-            document.getElementById('informacoes-imagem').innerHTML = `<img src="{% static 'assets/trilhas' %}${imagem}" alt="${imagem}">`;
-
-            // Adiciona a classe ativa para animação
-            infoDiv.classList.add('active');
-        }
-
-    </script>
-    <script>
-        ajustarLinhaVertical()
-    </script>
 {% endblock %}

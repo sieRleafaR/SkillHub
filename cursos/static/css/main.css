@@ -1414,7 +1414,7 @@ main{
 
     .backBtn {
         position: relative;
-        bottom: 18vh;
+        bottom: 12vh;
         height: 7vh;
         width: 8vw;
         background-color: white;
@@ -1447,14 +1447,15 @@ main{
     .icones {
         height: 16.6vh;
         width: 2vw;
-        margin-left: 7.5vh;
+        margin-left: 10vh;
     }
     .popupText {
         position: relative;
         font-weight: lighter;
-        left: 10vh;
-        bottom: 19vh;
+        left: 12vh;
+        bottom: 18vh;
         margin: 2vh;
+        padding: 0.3vh;
         word-spacing: 0.5vh;
     }
     }
@@ -2592,14 +2593,14 @@ main{
     .apagarCursoBtn{
         svg{
             width: 7.3vh;
-            height: 7.3vh;
+            height: 6.3vh;
         }
     }
     .btnEditCurso{
         svg{
             width: 5vh;
             color: black;
-            height: 5vh;
+            height: 4vh;
         }
     }
     .select-box {
