@@ -4,12 +4,14 @@
     flex-direction: column;
     width: 100%;
     height: 100%;
+    font-size: 2vh;
 }
 .headerTrilhaDiv{
     display: flex;
-    height: 20vh;
+    height: 25vh;
     width: 80%;
-    text-align: center;
+    align-items: center;
+    justify-content: center;
     margin: auto;
     h2{
       position: relative;
@@ -37,11 +39,14 @@
 .textHeader{
     background-color: #2C4957;
     width: 60%;
+    height: 70%;
     display: flex;
     flex-direction: column;
     align-items: start;
     justify-content: end;
     color: white;
+    border-radius: 0 5vh 5vh 0;
+    padding: 2vh;
     *{
       margin: 1vh;
     }
@@ -49,6 +54,7 @@
 .legendaCursosTrilha{
     text-align: right;
     width: 40%;
+    height: 80%;
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
@@ -59,19 +65,18 @@
     gap: 16px;
     padding: 16px;
     text-align: center;
-    width: 100%;
+    width: 85%;
 }
 
 .etapaContainer {
     display: flex;
     justify-content: start;
     flex-direction: column;
-    border: 0.2vh solid black;
     border-top: none;
     border-bottom: none;
 }
 .block{
-    max-width: 40%;
+    max-width: 60%;
     width: 100%;
     background-color: #f0f0f0;
     padding: 16px;
@@ -79,4 +84,14 @@
     border-radius: 8px;
     text-align: center;
     margin: 5vh auto 5vh auto;
+    position: relative;
+}
+.block + .block::before {
+    content: "↓";
+    font-size: 3vh;
+    color: black;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, -200%);
 }

@@ -131,4 +131,23 @@
             </div>
         </div>
          <script src="{% static 'js/main.js'  %}"></script>
+    <script>
+        document.getElementById('telefone').addEventListener('input', function (e) {
+            let input = e.target.value.replace(/\D/g, ''); // Remove todos os caracteres não numéricos
+            if (input.length > 11) input = input.slice(0, 11); // Limita a quantidade máxima de caracteres numéricos
+
+            // Formata o número de telefone
+            if (input.length > 10) {
+                input = `(${input.slice(0, 2)}) ${input.slice(2, 7)}-${input.slice(7)}`;
+            } else if (input.length > 6) {
+                input = `(${input.slice(0, 2)}) ${input.slice(2, 6)}-${input.slice(6)}`;
+            } else if (input.length > 2) {
+                input = `(${input.slice(0, 2)}) ${input.slice(2)}`;
+            } else if (input.length > 0) {
+                input = `(${input}`;
+            }
+
+            e.target.value = input; // Atualiza o valor formatado no input
+        });
+    </script>
 {% endblock %}

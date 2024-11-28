@@ -246,25 +246,27 @@ function fecharPopUp() {
     const fundoCinza = document.getElementById('fundoCinza');
     const popupLog = document.getElementById('popupLog');
     const popupFeedback = document.getElementById('popupFeedBack');
+    const popupRede = document.getElementById('popupRede');
 
-    // Parar a animação da barra de progresso
     if (progressBarInterval) {
         clearInterval(progressBarInterval);
         progressBarInterval = null;
     }
 
-    // Ocultar a barra de progresso
-    document.getElementById('progress-bar-container').style.display = 'none';
+    const progressBarContainer = document.getElementById('progress-bar-container');
+    if (progressBarContainer) {
+        progressBarContainer.style.display = 'none';
+    }
 
-    // Fechar todos os popups
-    popupObg.style.display = 'none';
-    popupLog.style.display = 'none';
-    popupSobre.style.display = 'none';
-    popupFeedback.style.display = 'none';
+    // Fechar todos os popups, verificando se o elemento existe
+    if (popupObg) popupObg.style.display = 'none';
+    if (popupLog) popupLog.style.display = 'none';
+    if (popupSobre) popupSobre.style.display = 'none';
+    if (popupFeedback) popupFeedback.style.display = 'none';
+    if (popupRede) popupRede.style.display = 'none';
 
-    setTimeout(() => {
-        fundoCinza.style.display = 'none';
-    }, 200);
+    // Esconder o fundoCinza após o tempo
+    if (fundoCinza) fundoCinza.style.display = 'none';
 }
 
 function elevarFooter() {
@@ -526,7 +528,7 @@ function ajustarLinhaVertical() {
 function verificarAttPage() {
     verificarTrocaHeader()
 }
-function moverbOLA() {
+function moverBola() {
     const circle = document.getElementById('circle');
     const mouseX = event.clientX;
     const mouseY = event.clientY;
@@ -535,6 +537,15 @@ function moverbOLA() {
     circle.style.left = `${mouseX}px`;
     circle.style.top = `${mouseY}px`;
 }
+function popupSocial(rede) {
+    const popupRede = document.querySelector('.popupRede');
+    const fundoCinza = document.getElementById('fundoCinza')
+    popupRede.querySelector('h1').textContent = rede + ' do senai';
+    popupRede.querySelector('img').src = 'static/assets/qrcode/' + rede + '_qrcode.png';
+    popupRede.style.display = 'flex'
+    fundoCinza.style.display = 'block'
+}
+
 
 // funções fim
 
@@ -553,7 +564,7 @@ window.addEventListener('scroll', function() {
 document.addEventListener('mousemove', function(event) {
     verificarTrocaHeader()
     resetarTimer(event);
-    moverbOLA(event);
+    moverBola(event);
 });
 document.addEventListener('click', resetarTimer);
 document.addEventListener('keypress', resetarTimer);

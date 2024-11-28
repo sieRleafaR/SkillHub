@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class Cursos(models.Model):
     id_curso = models.AutoField(primary_key=True)
     nome_curso = models.CharField(max_length=100)
@@ -27,15 +28,26 @@ class Formulario(models.Model):
     telefone = models.CharField(max_length=100)
     nomeCurso = models.CharField(max_length=100)
 
+    class Meta:
+        db_table = 'Formulario'
+
     def __str__(self):
         return self.nomeForm
 
-class feedback(models.Model):
+
+class Feedback(models.Model):
     numestrela = models.IntegerField()
 
+    class Meta:
+        db_table = 'Feedback'
+
+
 class Usuario(models.Model):
-    usuario = models.CharField(max_length=50)
-    senha = models.CharField(max_length=128)
+    usuario = models.CharField(max_length=100)
+    senha = models.CharField(max_length=100)
+
+    class Meta:
+        db_table = 'Usuario'
 
     def __str__(self):
         return self.usuario
@@ -49,5 +61,45 @@ class CursoCalendario(models.Model):
     ano = models.IntegerField()
     statusCalen = models.IntegerField()
 
+    class Meta:
+        db_table = 'Calendario'
+
     def __str__(self):
         return self.titulo
+
+
+class Trilha(models.Model):
+    idTrilha = models.AutoField(primary_key=True)
+    nomeTri = models.CharField(max_length=255)  # Nome da trilha
+    explicaTri = models.TextField()  # Descrição da trilha
+    cargaMinTri = models.IntegerField()  # Carga horária mínima
+    cargaMaxTri = models.IntegerField()  # Carga horária máxima
+    etapas = models.JSONField()  # Etapas da trilha (armazenadas como JSON)
+    imageTri = models.CharField(max_length=255)  # Caminho da imagem da trilha
+
+    class Meta:
+        db_table = 'Trilha'
+
+    def __str__(self):
+        return self.nomeTri
+
+class TagsCursos(models.Model):
+    id_tag = models.AutoField(primary_key=True)  # Campo id_tag como chave primária
+    tag = models.CharField(max_length=100, unique=True)  # Campo tag com valores únicos
+
+    class Meta:
+        db_table = 'TagsCursos'  # Nome da tabela no banco de dados
+
+    def __str__(self):
+        return self.tag
+
+
+class TiposCursos(models.Model):
+    id_tipo = models.AutoField(primary_key=True)  # Campo id_tipo como chave primária
+    tipo = models.CharField(max_length=100, unique=True)  # Campo tipo com valores únicos
+
+    class Meta:
+        db_table = 'TiposCursos'  # Nome da tabela no banco de dados
+
+    def __str__(self):
+        return self.tipo

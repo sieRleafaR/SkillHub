@@ -1,29 +1,24 @@
 from django.http import HttpResponseNotFound
 from django.shortcuts import render, redirect
-from .models import Formulario, feedback, Usuario, CursoCalendario, Cursos
+from .models import *
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-import json
 from django.contrib import messages
+from django.core.files.storage import FileSystemStorage
+from django.db import connection
+import json
 import os
 import re
-from django.db import connection
-from django.core.files.storage import FileSystemStorage
 
-loginRealizado = True
+loginRealizado = False
 
 def home(request):
     global loginRealizado
     return render(request, 'cursos/home.html', {'loginRealizado': loginRealizado})
 
-def sobre(request):
-    return render(request, 'cursos/sobre.html')
 
 def login(request):
     return render(request, 'cursos/login.html')
-
-def questionario(request):
-    return render(request, 'cursos/questionario.html')
 
 def perfilCurso(request):
     return render(request, 'cursos/perfilCurso.html')
@@ -217,7 +212,7 @@ def apagar_curso(request, idCurso):
         return JsonResponse({"message": "Erro ao desativar curso"}, status=500)
 
 def carregar_eventos(request):
-    query = "SELECT idCalen, titulo, dia, mes, ano, statusCalen FROM cursos_calendario where statusCalen=1"
+    query = "SELECT idCalen, titulo, dia, mes, ano, statusCalen FROM calendario where statusCalen=1"
     eventos = CursoCalendario.objects.raw(query)
 
     eventos_dict = {}
@@ -331,6 +326,7 @@ def editarCurso(request, idCurso):
 
     return HttpResponseNotFound('<h1>Curso não encontrado</h1>')
 
+
 @csrf_exempt
 def salvar_evento(request, event_id=None):
     if request.method in ['POST', 'PUT']:
@@ -345,24 +341,34 @@ def salvar_evento(request, event_id=None):
             if not titulo or dia is None or mes is None or ano is None:
                 return JsonResponse({'success': False, 'error': 'Dados inválidos.'}, status=400)
 
-            with connection.cursor() as cursor:
-                if request.method == 'PUT' and event_id:  # Editar evento existente
-                    cursor.execute(
-                        "UPDATE cursos_calendario SET titulo = %s, dia = %s, mes = %s, ano = %s, statusCalen = %s WHERE idCalen = %s",
-                        [titulo, dia, mes, ano, data.get('statusCalen', 1), event_id]
-                    )
+            if request.method == 'PUT' and event_id:
+                try:
+                    evento = CursoCalendario.objects.get(idCalen=event_id)  # Busca o evento
+                    evento.titulo = titulo
+                    evento.dia = dia
+                    evento.mes = mes
+                    evento.ano = ano
+                    evento.statusCalen = data.get('statusCalen', 1)  # Atualiza o status, padrão 1
+                    evento.save()  # Salva a alteração no banco
                     response = {'success': True}
-                elif request.method == 'POST':  # Criar novo evento
-                    cursor.execute(
-                        "INSERT INTO cursos_calendario (titulo, dia, mes, ano, statusCalen) VALUES (%s, %s, %s, %s, %s)",
-                        [titulo, dia, mes, ano, data.get('statusCalen', 1)]
-                    )
-                    new_event_id = cursor.lastrowid
-                    response = {'success': True, 'idCalen': new_event_id}
-                else:
-                    return JsonResponse({'success': False, 'error': 'Requisição inválida.'}, status=400)
+                except CursoCalendario.DoesNotExist:
+                    response = {'success': False, 'error': 'Evento não encontrado.'}
+
+            elif request.method == 'POST':
+                evento = CursoCalendario.objects.create(
+                    titulo=titulo,
+                    dia=dia,
+                    mes=mes,
+                    ano=ano,
+                    statusCalen=data.get('statusCalen', 1)  # Status padrão 1
+                )
+                response = {'success': True, 'idCalen': evento.idCalen}  # Retorna o id do novo evento
+
+            else:
+                return JsonResponse({'success': False, 'error': 'Requisição inválida.'}, status=400)
 
             return JsonResponse(response)
+
         except Exception as e:
             print(f"Erro ao salvar evento: {e}")  # Exibe o erro no terminal para depuração
             return JsonResponse({'success': False, 'error': 'Erro ao salvar o evento.'}, status=500)
@@ -373,21 +379,21 @@ def salvar_evento(request, event_id=None):
 @csrf_exempt
 def excluir_evento(request, event_id):
     if request.method in ['POST', 'PUT']:
-        with connection.cursor() as cursor:
-            if event_id:
-                cursor.execute("UPDATE cursos_calendario SET statusCalen = 0 WHERE idCalen = %s", [event_id])
-                response = {'success': True}
-            else:
-                response = {'success': False, 'error': 'Evento não encontrado.'}
+        try:
+            evento = CursoCalendario.objects.get(idCalen=event_id)
+            evento.statusCalen = 0
+            evento.save()
+            response = {'success': True}
+        except CursoCalendario.DoesNotExist:
+            response = {'success': False, 'error': 'Evento não encontrado.'}
 
-            return JsonResponse(response)
+        return JsonResponse(response)
     else:
         return JsonResponse({'success': False, 'error': 'Método não permitido.'}, status=405)
 
 
 def listar_eventos(request):
-    query = "SELECT idCalen, titulo, dia, mes, ano, statusCalen FROM cursos_calendario"
-    eventos = CursoCalendario.objects.raw(query)
+    eventos = CursoCalendario.objects.all()
 
     eventos_list = [{
         'idCalen': evento.idCalen,
@@ -402,11 +408,8 @@ def listar_eventos(request):
 
 
 def enviar_formulario(request):
-    with connection.cursor() as cursor:
-        cursor.execute('SELECT nome_curso FROM cursos')
-        cursos = cursor.fetchall()
-
-    cursos_lista = [{'nome_curso': curso[0]} for curso in cursos]
+    cursos = Cursos.objects.all().values('nome_curso')  # Isso retorna uma QuerySet de dicionários com o campo 'nome_curso'
+    cursos_lista = [{'nome_curso': curso['nome_curso']} for curso in cursos]
 
     popUp = False
     mensagem_erro = 'False'
@@ -418,7 +421,7 @@ def enviar_formulario(request):
         nomeCurso = request.POST.get('nomeCurso')
 
         if nomeCurso == 'outros':
-            nomeCurso = request.POST.get('outroInput')
+            nomeCurso = 'Sugestão:  ' + request.POST.get('outroInput')
 
         validar = validar_contato(telefoneForm, emailForm)
 
@@ -436,84 +439,71 @@ def enviar_formulario(request):
     return render(request, 'cursos/questionario.html', {
         'cursos': cursos_lista,
         'popUp': popUp,
-        'mensagem_erro': mensagem_erro  # Passa a mensagem de erro ao template
+        'mensagem_erro': mensagem_erro
     })
-
-
-
 
 def avaliar(request):
     if request.method == 'POST':
         num_estrelas = request.POST.get('numestrela')
         if num_estrelas:
-            AValiacao = feedback(numestrela=num_estrelas)
+            AValiacao = Feedback(numestrela=num_estrelas)
             AValiacao.save()
             return redirect('home')
     return render(request, 'cursos/home.html')
+
 
 def login_view(request):
     global loginRealizado
     popUpLogin = False
     mensagem = 'False'
+
     if request.method == 'POST':
         username = request.POST.get('nome')
         password = request.POST.get('senha')
 
+        try:
+            usuario = Usuario.objects.get(usuario=username)
 
-        with connection.cursor() as cursor:
-            cursor.execute("SELECT senha FROM usuario WHERE usuario = %s", [username])
-            result = cursor.fetchone()
-
-        if result:
-            senhaofc = result[0]
-            if password == senhaofc:
+            if usuario.senha == password:
                 loginRealizado = True
                 messages.success(request, "Login bem sucedido!")
                 popUpLogin = True
-
-
             else:
                 mensagem = 'True'
                 messages.error(request, "Senha incorreta!")
-        else:
+
+        except Usuario.DoesNotExist:
             mensagem = 'True'
             messages.error(request, 'Usuário inexistente ou senha inválida')
 
     return render(request, 'cursos/login.html', {
-        'loginRealizado':loginRealizado,
-        'popUpLogin':popUpLogin,
+        'loginRealizado': loginRealizado,
+        'popUpLogin': popUpLogin,
         'mensagem': mensagem
     })
 
 def trilhas(request, filtro=None):
-    query_Trilhas = '''
-            SELECT imageTri,nomeTri,explicaTri,cargaMinTri,cargaMaxTri, idTrilha
-            FROM trilha
-        '''
+    # Filtra as trilhas conforme o filtro (se fornecido) ou traz todas
+    if filtro:
+        trilhas_queryset = Trilha.objects.filter(nomeTri__icontains=filtro)
+    else:
+        trilhas_queryset = Trilha.objects.all()
 
-    with connection.cursor() as cursor:
-        cursor.execute(query_Trilhas)
-        Trilhas = cursor.fetchall()
-
-    Trilha_lista = [
+    # Converte as trilhas para o formato esperado no template
+    trilhas_lista = [
         {
-            'imageTri': trilha[0],
-            'nomeTri': trilha[1],
-            'explicaTri': trilha[2],
-            'cargaMinTri': trilha[3],
-            'cargaMaxTri': trilha[4],
-            'idTrilha': trilha[5]
-
+            'imageTri': trilha.imageTri,
+            'nomeTri': trilha.nomeTri,
+            'explicaTri': trilha.explicaTri,
+            'cargaMinTri': trilha.cargaMinTri,
+            'cargaMaxTri': trilha.cargaMaxTri,
+            'idTrilha': trilha.idTrilha
         }
-        for trilha in Trilhas
+        for trilha in trilhas_queryset
     ]
 
-    return render(request, 'cursos/trilhas.html', {'trilhas': Trilha_lista})
+    return render(request, 'cursos/trilhas.html', {'trilhas': trilhas_lista})
 
-from django.shortcuts import render
-from django.http import HttpResponseNotFound
-from django.db import connection
-import json
 
 
 def cursosTrilha(request, idTrilha):
@@ -595,5 +585,3 @@ def cursosTrilha(request, idTrilha):
     except Exception as e:
         print(f"Erro ao buscar a trilha: {e}")
         return HttpResponseNotFound('<h1>Erro ao carregar a trilha</h1>')
-
-
