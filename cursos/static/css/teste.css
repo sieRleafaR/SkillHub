@@ -67,7 +67,9 @@
     text-align: center;
     width: 85%;
 }
-
+.contPrimeiro{
+    margin: 16px;
+}
 .etapaContainer {
     display: flex;
     justify-content: start;
@@ -79,7 +81,6 @@
     max-width: 60%;
     width: 100%;
     background-color: #f0f0f0;
-    padding: 16px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
     text-align: center;

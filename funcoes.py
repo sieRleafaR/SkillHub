@@ -1,15 +1,7 @@
-from num2words import num2words
+
+
 import os
 import qrcode
-
-# Exemplos de números cardinais convertidos para ordinais
-print(num2words(1, lang='pt', to='ordinal'))
-print(num2words(2, lang='pt', to='ordinal'))
-print(num2words(3, lang='pt', to='ordinal'))
-print(num2words(10, lang='pt', to='ordinal'))
-print(num2words(21, lang='pt', to='ordinal'))
-
-
 def gerar_qrcodes():
     links = {
         "instagram": "https://www.instagram.com/senai.sp",
@@ -18,7 +10,7 @@ def gerar_qrcodes():
         "linkedin": "https://www.linkedin.com/school/senaisp/posts/?feedView=all",
         "youtube": "https://www.youtube.com/channel/UCaz1BMUVug86pd_uS598X1A"
     }
-    dir_path = os.path.join('static', 'assets', 'qrcode')
+    dir_path = os.path.join('cursos/static', 'assets', 'qrcode')
 
     if not os.path.exists(dir_path):
         os.makedirs(dir_path)

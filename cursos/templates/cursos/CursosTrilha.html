@@ -24,12 +24,28 @@
                     {% for item in etapa.itens %}
                         <div class="block">
                             {% if item.tipo == "curso" %}
-                                <p><strong>Curso:</strong> {{ item.nome_curso }}</p>
-                                <p>Descrição: {{ item.descricao_curso }}</p>
-                                <p>Horas: {{ item.horas_curso }}</p>
+                                <style>
+                                    .contSegundo{
+                                        width: 120%;
+                                        height: 120%;
+                                        background-size: 100%;
+                                        background-position: center;
+                                        background-repeat: no-repeat;
+                                        display: none;
+                                    }
+                                </style>
+                                <div class="contPrimeiro">
+                                    <p><strong>Curso:</strong> {{ item.nome_curso }}</p>
+                                    <p><strong>Descrição:</strong> {{ item.descricao_curso }}</p>
+                                    <p><strong>Horas:</strong> {{ item.horas_curso }}</p>
+                                </div>
+                                <div class="contSegundo" style="background-image: url({% static 'assets/cursos' %}{{ item.imagem_curso }})">
+                                    <h1 class="nomeCurso">{{ item.nome_curso }}</h1>
+                                    <div class="sobreMaisCurso">Ver mais sobre o curso</div>
+                                </div>
                             {% elif item.tipo == "trilha" %}
                                 <p><strong>Trilha:</strong> {{ item.nome_trilha }}</p>
-                                <p>Carga Horária: {{ item.cargaMinTri }} - {{ item.cargaMaxTri }}</p>
+                                <p><strong>Carga Horária:</strong> {{ item.cargaMinTri }} - {{ item.cargaMaxTri }}</p>
                             {% endif %}
                         </div>
                     {% endfor %}
