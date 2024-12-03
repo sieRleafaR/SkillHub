@@ -1,78 +1,163 @@
 {% extends 'base.html' %}
 
-{% block title %}historia{% endblock %}
+{% block title %}Senai{% endblock %}
 
 {% load static  %}
 
 {% block content %}
 
         <div id="historia" class="divHistoria">
-            <a href="{% url 'home' %}">
-                <svg xmlns="http://www.w3.org/2000/svg" class="seta" viewBox="0 0 16 16">
-                    <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
-                </svg>
-            </a>
+
             <div class="fundoCarrosel">
                 <section class="slider">
-                    <input type="radio" name="slide" id="slide1" checked>
-                    <input type="radio" name="slide" id="slide2">
-                    <input type="radio" name="slide" id="slide3">
-                    <input type="radio" name="slide" id="slide4">
-
                     <div class="slider-content">
-                        <div class="slider-item">
-                            <img src="{% static 'img/senai-antiga.jpg' %}" alt="Senai Antiga">
+                        <div class="slider-item1">
+                            <h1 class="Encontre_curiosidade1">Quer descobrir mais curiosidades do SENAI</h1>
+                            <h4>Subtexto</h4>
+                            <label onclick="secHistoria(1)" class="nav-dot1">Clique Aqui</label>
                         </div>
-                        <div class="slider-item">
-                            <div class="imagemEspecifica">
-                                <img src="{% static 'img/senairp.jpg' %}" alt="Senai Moderna">
-                            </div>
+                        <div class="slider-item2">
+                            <h1 class="Encontre_curiosidade1"> Localidade em São josé do Rio preto</h1>
+                            <h4>Subtexto</h4>
+                            <label onclick="secHistoria(2)" class="nav-dot1">CLIQUE AQUI</label>
                         </div>
-                        <div class="slider-item">
-                            <div class="imagemEspecifica">
-                                <img src="{% static 'img/hawks.jpg' %}"alt="Educação Senai">
-                            </div>
+                        <div class="slider-item3">
+                            <h1 class="Encontre_curiosidade1">Encontre mais curiosidades</h1>
+                            <h4>Subtexto</h4>
+                            <label onclick="secHistoria(3)" class="nav-dot1">CLIQUE AQUI</label>
                         </div>
-                        <div class="slider-item">
-                            <div class="imagemEspecifica">
-                                <img src="{% static 'img/curso-senai.jpg' %}" alt="Inovação Senai">
-                            </div>
+                        <div class="slider-item4">
+                            <h1 class="Encontre_curiosidade1">Veja Mais sobre o local</h1>
+                            <h4>Subtexto</h4>
+                            <label onclick="secHistoria(4)" class="nav-dot1">CLIQUE AQUI</label>
                         </div>
                     </div>
-
                     <div class="navigation">
-                        <label for="slide1"></label>
-                        <label for="slide2"></label>
-                        <label for="slide3"></label>
-                        <label for="slide4"></label>
+                        <label for="slide2" class="nav-dot"></label>
+                        <label for="slide3" class="nav-dot"></label>
+                        <label for="slide4" class="nav-dot"></label>
+                        <label for="slide5" class="nav-dot"></label>
+                    </div>
+
+
+                    <div class="palavras_historia">
+                        <div class="slider-content">
+                            <div class=" slider-item1">
+                                <h1 class="testoTituloCarrossel"></h1>
+                                <h5 class="textoSubTituloCarro"></h5>
+                                <a href="" class="moverParaOConteudo"></a>
+                            </div>
+                            <div class="slider-item2">
+                                    <h1 class="testoTituloCarrossel"></h1>
+                                    <h5 class="textoSubTituloCarro"></h5>
+                                    <a href="" class="moverParaOConteudo"></a>
+                            </div>
+                            <div class="slider-item3">
+                                <h1 class="testoTituloCarrossel"></h1>
+                                <h5 class="textoSubTituloCarro"></h5>
+                                <a href="" class="moverParaOConteudo"></a>
+                            </div>
+                            <div class="slider-item4">
+                                <h1 class="testoTituloCarrossel"></h1>
+                                <h5 class="textoSubTituloCarro"></h5>
+                                <a href="" class="moverParaOConteudo"></a>
+                            </div>
+                        </div>
                     </div>
                 </section>
 
             </div>
 
             <div class="imagemNumeroum">
-                <img class="img1" src="{% static 'img/senai-antiga.jpg' %}">
+                <img class="img1"  src="{% static 'img/senai-antiga.jpg' %}">
             </div>
-            <div class="primeiraEscrita">
+            <div class="primeiraEscrita" id="item1">
                 <h3>
                     O Senai foi criado em 1942 para qualificar mão de obra, evoluiu junto com o setor, tornando-se referência em educação profissional e tecnológica e inovação. Em oito décadas, a rede de escolas e institutos espalhados pelo país multiplicou o número de unidades, ampliou o portfólio de cursos e serviços para as 28 áreas industriais e alcançou um nível de excelência, da infraestrutura ao corpo técnico.
                 </h3>
             </div>
 
             <div class="segundaEscrita">
-                <div>
                     <h3 class="letradois">
-                        Em 3 de fevereiro de 1694, era inaugurado em São José do Rio Preto, o Serviço Nacional de Aprendizagem Industrial (Senai). A escola leva o nome do diretor do Senai de São Paulo, Antônio Devisate. Segundo verbete do dicionário rio-pretense, de Leá Arantes, a história começou por volta de 1955, quando o então Presidente da Associação Comercial e Industrial de Rio Preto, José Beolchi, encontrou-se em São Paulo com Devisate e com Hebert de Arruda Pereira, diretor da Fiesp à época. O encontro foi matéria de destaque do jornal Diário da Região, em 14 de fevereiro de 1956.
+                        Em 3 de fevereiro de 1694, era inaugurado em São José do Rio Preto, o Serviço Nacional de Aprendizagem
+                        Industrial (Senai). A escola leva o nome do diretor do Senai de São Paulo, Antônio Devisate.
+                        Segundo verbete do dicionário rio-pretense, de Leá Arantes, a história começou por volta de 1955,
+                        quando o então Presidente da Associação Comercial e Industrial de Rio Preto, José Beolchi, encontrou-se em São Paulo
+                        com Devisate e com Hebert de Arruda Pereira, diretor da Fiesp à época.
+                        O encontro foi matéria de destaque do jornal Diário da Região, em 14 de fevereiro de 1956.
                     </h3>
-                </div>
             </div>
             <div class="imagemNumerodois">
                     <img class="img" src="{% static 'img/senairp.jpg' %}">
+            </div>
+            <div class="Localizacao_mapa">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3729.091445794864!2d-49.396953224925056!3d-20.828013480771556!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94bdb28ef67ceeab%3A0x33d013324e06d5a9!2sEscola%20Senai!5e0!3m2!1spt-BR!2sbr!4v1732792886085!5m2!1spt-BR!2sbr"
+                        width="100%" height="100%" style="border:0;border-radius: 5%;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+                </iframe>
+            </div>
+            <div class="segundo_mapa">
+                <img class="imagem_sei" src="{% static '/img/Planta_certa.jpg' %}">
+            </div>
+            <div class="escrita_Mapa1">
+                <h1 class="escrita_Mapa_especifica1">Este mapa mostra como o SENAI está posicionado na cidade e sua proximidade com importantes áreas industriais e comerciais, destacando sua relevância na formação de profissionais para a indústria local e regional.</h1>
+            </div>
+            <div class="escrita_Mapa2">
+                <h1 class="escrita_Mapa_especifica2">Esse mapa permite que você visualize a distribuição das instalações, facilitando o entendimento da disposição do campus e a importância de cada setor na formação dos profissionais que passam por essa instituição de excelência.</h1>
             </div>
                 <section class="video-section">
                 <video class="videozinho" controls autoplay muted>
                     <source class="video" src="{% static 'img/Dia da Indústria!.mp4' %}" type="video/mp4">
                 </video>
             </section>
+            <div onclick="vaiSubir()" class="voltarTopoBtn">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-arrow-up-short" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M8 12a.5.5 0 0 0 .5-.5V5.707l2.146 2.147a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 0 0-.708 0l-3 3a.5.5 0 1 0 .708.708L7.5 5.707V11.5a.5.5 0 0 0 .5.5"/>
+                </svg>
+            </div>
         </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const slides = document.querySelectorAll(".slider-content > div");
+            const dots = document.querySelectorAll(".navigation .nav-dot");
+            let currentSlide = 0;
+            const slideCount = 4;
+            let autoSlideInterval;
+
+            // Função para mudar de slide
+            function goToSlide(slideIndex) {
+                const sliderContent = document.querySelector(".slider-content");
+                sliderContent.style.transform = `translateX(-${slideIndex * 100}%)`;
+
+                // Atualiza a cor dos dots
+                dots.forEach((dot, index) => {
+                    dot.style.backgroundColor = index === slideIndex ? "#2196F3" : "white";
+                });
+
+                currentSlide = slideIndex;
+            }
+
+            // Função para avançar para o próximo slide
+            function nextSlide() {
+                // Avança para o próximo slide ou volta para o primeiro se for o último
+                if (currentSlide + 1 < slideCount) {
+                    goToSlide(currentSlide + 1); // Avança para o próximo slide
+                } else {
+                    goToSlide(0); // Volta para o primeiro slide
+                }
+            }
+
+            // Configura os dots para mudar de slide ao clicar
+            dots.forEach((dot, index) => {
+                dot.addEventListener("click", () => {
+                    goToSlide(index);
+                });
+            });
+
+            // Inicia o carrossel automático
+            autoSlideInterval = setInterval(nextSlide, 5000);
+
+            // Exibe o primeiro slide no início
+            goToSlide(0);
+        });
+    </script>
 {% endblock %}

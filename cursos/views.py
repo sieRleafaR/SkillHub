@@ -1,5 +1,5 @@
 from django.http import HttpResponseNotFound
-from django.shortcuts import render, redirect
+from django.shortcuts import render,redirect, get_object_or_404
 from .models import *
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -11,6 +11,20 @@ import os
 import re
 
 loginRealizado = False
+
+def admPage(request):
+    global loginRealizado
+    if loginRealizado == False:
+        return render(request, 'cursos/erro.html')
+    else:
+        return render(request, 'cursos/administrador.html')
+def respostas(request):
+    global loginRealizado
+    if loginRealizado == False:
+        return render(request, 'cursos/erro.html')
+    else:
+        respostas = Formulario.objects.all()
+        return render(request, 'cursos/respostasQuestionario.html', {"respostas": respostas})
 
 def home(request):
     global loginRealizado
@@ -97,6 +111,14 @@ def mostrar_perfil_curso(request, curso_id):
     except Exception as e:
         print(f"Erro ao buscar curso: {e}")
         return HttpResponseNotFound('<h1>Curso não encontrado</h1>')
+
+def cursosApagados(request):
+    global loginRealizado
+    if loginRealizado == False:
+        return render(request, 'cursos/erro.html')
+    else:
+        cursos_inativos = Cursos.objects.filter(status_curso=False)
+        return render(request, 'cursos/cursosApagados.html', {'cursos_inativos': cursos_inativos})
 
 def cursos(request, filtro=None):
     # Query para buscar cursos
@@ -195,21 +217,17 @@ def  adicionar_curso(request):
         'loginRealizado': loginRealizado
         })
 
+def reativarCurso(request, idCurso):
+    curso = get_object_or_404(Cursos, id_curso=idCurso)
+    curso.status_curso = True
+    curso.save()
+    return redirect('cursos')
 
 def apagar_curso(request, idCurso):
-    try:
-        with connection.cursor() as cursor:
-            cursor.execute("""
-                UPDATE Cursos
-                SET status_curso = 0
-                WHERE id_curso = %s
-            """, [
-                idCurso
-            ])
-        return redirect('cursos')
-    except Exception as e:
-        print(f"Erro ao desativar curso: {e}")
-        return JsonResponse({"message": "Erro ao desativar curso"}, status=500)
+    curso = get_object_or_404(Cursos, id_curso=idCurso)
+    curso.status_curso = False
+    curso.save()
+    return redirect('cursos')
 
 def carregar_eventos(request):
     query = "SELECT idCalen, titulo, dia, mes, ano, statusCalen FROM calendario where statusCalen=1"
@@ -556,7 +574,7 @@ def cursosTrilha(request, idTrilha):
                 trilha_ids = etapa.get("trilhas", [])
                 if trilha_ids:
                     query_trilha = """
-                        SELECT idTrilha, nomeTri, cargaMinTri, cargaMaxTri, imageTri
+                        SELECT idTrilha, nomeTri, cargaMinTri, cargaMaxTri, imageTri, explicaTri
                         FROM Trilha WHERE idTrilha IN %s;
                     """
                     cursor.execute(query_trilha, [tuple(trilha_ids)])
@@ -567,7 +585,8 @@ def cursosTrilha(request, idTrilha):
                             'nome_trilha': sub_trilha[1],
                             'cargaMinTri': sub_trilha[2],
                             'cargaMaxTri': sub_trilha[3],
-                            'imageTri': sub_trilha[4]
+                            'imageTri': sub_trilha[4],
+                            'descTri': sub_trilha[5]
                         })
 
                 etapas_lista.append(etapa_itens)

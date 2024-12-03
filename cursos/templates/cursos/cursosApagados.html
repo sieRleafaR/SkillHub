@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block title %}Cursos Desativados{% endblock %}
+
+{% load static  %}
+
+{% block content %}
+    <style>
+    </style>
+    <div id="cursos">
+        <div id="PerfilCurso" class="cursoContainer">
+            <section class="cursos" id="curso-list">
+            {% for curso in cursos_inativos %}
+                <div class="cursoCard"
+                     data-nome="{{ curso.nome_curso|lower }}"
+                     data-tipo="{{ curso.tipo_curso|lower }}"
+                     data-tags="{{ curso.tags_cursos|lower }}">
+                    <img src="{% static 'assets/cursos' %}{{ curso.imagem_curso }}" alt="{{ curso.imagem_curso }}">
+                    <div class="infoCursos">
+                        <textosCurso>
+                            <h2>{{ curso.nome_curso }}</h2>
+                            <p>Curso de {{ curso.tipo_curso }}</p>
+                        </textosCurso>
+                        <a href="{% url 'perfilCurso' curso.id_curso %}" class="btn">Saiba mais</a>
+                    </div>
+                    <style>
+                        .btnEditCurso{
+                            color: #AB0B12;
+                            font-weight: bold;
+                            text-align: center;
+                            margin: auto;
+                        }
+                    </style>
+                    <div style="justify-content: center" class="contAdminiCurso">
+                        <a href="{% url 'reativarCurso' curso.id_curso %}" class="btnEditCurso">Reativar Curso</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </section>
+        </div>
+    </div>
+    <script>
+        function ajustarFontePorCaracteres(card) {
+            const h2 = card.querySelector('h2'); // Seleciona o <h2> dentro do cursoCard
+            if (!h2) return;
+
+            const texto = h2.textContent.trim(); // Obtém o texto dentro do <h2>
+            const maxFontSize = 4; // Tamanho máximo da fonte (em vh)
+            const minFontSize = 2; // Tamanho mínimo da fonte (em vh)
+            const maxChars = 50; // Quantidade de caracteres antes de diminuir a fonte
+
+            // Calcula o tamanho da fonte com base na quantidade de caracteres
+            let fontSize = maxFontSize - (texto.length / maxChars) * (maxFontSize - minFontSize);
+            fontSize = Math.max(fontSize, minFontSize);
+
+            h2.style.fontSize = `${fontSize}vh`;
+        }
+
+        // Aplicar a lógica em todos os cartões
+        function ajustarFontesNosCartoes() {
+            const cursoCards = document.querySelectorAll('.cursoCard'); // Seleciona todos os cursoCard
+            cursoCards.forEach(card => ajustarFontePorCaracteres(card)); // Ajusta o <h2> em cada cartão
+        }
+
+        // Executar quando a página carregar
+        window.addEventListener('DOMContentLoaded', ajustarFontesNosCartoes);
+
+        // (Opcional) Reajustar as fontes quando a janela for redimensionada
+        window.addEventListener('resize', ajustarFontesNosCartoes);
+    </script>
+{% endblock %}

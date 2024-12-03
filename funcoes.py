@@ -1,5 +1,3 @@
-
-
 import os
 import qrcode
 def gerar_qrcodes():

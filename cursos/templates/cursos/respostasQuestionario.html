@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %} Respostas {% endblock %}
+
+{% load static %}
+
+{% block content %}
+    <style>
+        .formDiv{
+            width: 100%;
+            min-height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .contRespostas{
+            width: 65%;
+            height: 65%;
+            box-shadow: 0.5vh 0.5vh 1vh rgba(2, 2, 2, 0.4);
+            border-radius: 1vw;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            padding: 2vw;
+            margin: 4vw 0;
+        }
+        .respostaCard{
+            width: 96%;
+            box-shadow: 0.5vh 0.5vh 1vh rgba(2, 2, 2, 0.4);
+            display: flex;
+            margin: 1.5vw auto;
+            padding: 2%;
+            border-radius: 1vw;
+            justify-content: space-between;
+            h3,h2{
+                font-weight: lighter;
+            }
+        }
+        .respostaSecond{
+            max-width: 50%;
+            text-align: right;
+        }
+        .respostaFirst{
+            max-width: 50%;
+        }
+    </style>
+    <div class="formDiv">
+        <div class="contRespostas">
+            {% for resposta in respostas %}
+                <div class="respostaCard">
+                    <div class="respostaFirst">
+                        <h2><strong>Nome:</strong>{{ resposta.nomeForm }}</h2><br>
+                        <h3><strong>Informações de Contato:</strong><br>{{ resposta.telefone }}<br>{{ resposta.emailForm }}</h3>
+                    </div>
+                    <div class="respostaSecond">
+                        <h3><strong>Curso de interesse:</strong><br>{{ resposta.nomeCurso }}</h3>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

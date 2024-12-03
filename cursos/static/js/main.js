@@ -545,6 +545,37 @@ function popupSocial(rede) {
     popupRede.style.display = 'flex'
     fundoCinza.style.display = 'block'
 }
+function secHistoria(secao) {
+    switch (secao) {
+        case 1:
+            valorMove = -70;
+            break;
+        case 2:
+            valorMove = -140;
+            break;
+        case 3:
+            valorMove = -300;
+            break;
+        case 4:
+            valorMove = -200
+            break;
+        default:
+            valorMove = 5;
+    }
+    const posicaoFinal = window.scrollY - (valorMove * window.innerHeight / 100);
+    window.scrollTo({
+        top: posicaoFinal,
+        behavior: 'smooth'
+    });
+}
+// Vai descer?
+//Não!
+function vaiSubir() {
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
+}
 
 
 // funções fim

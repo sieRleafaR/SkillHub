@@ -4,6 +4,10 @@ from . import views
 urlpatterns = [
     path('', views.home, name='home'),
     path('cursos/', views.cursos, name='cursos'),
+    path('cursosApagados/', views.cursosApagados, name='cursosApagados'),
+    path('respostas/', views.respostas, name='respostas'),
+    path('reativarCurso/<int:idCurso>/', views.reativarCurso, name='reativarCurso'),
+    path('administrador/', views.admPage, name='administrador'),
     path('cursos/<str:filtro>/', views.cursos, name='cursos_filtrados'),
     path('login/', views.login, name='login'),
     path('formulario/', views.enviar_formulario, name='formulario'),

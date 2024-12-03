@@ -24,28 +24,26 @@
                     {% for item in etapa.itens %}
                         <div class="block">
                             {% if item.tipo == "curso" %}
-                                <style>
-                                    .contSegundo{
-                                        width: 120%;
-                                        height: 120%;
-                                        background-size: 100%;
-                                        background-position: center;
-                                        background-repeat: no-repeat;
-                                        display: none;
-                                    }
-                                </style>
                                 <div class="contPrimeiro">
                                     <p><strong>Curso:</strong> {{ item.nome_curso }}</p>
                                     <p><strong>Descrição:</strong> {{ item.descricao_curso }}</p>
-                                    <p><strong>Horas:</strong> {{ item.horas_curso }}</p>
+                                    <p><strong>Carga Horária:</strong> {{ item.horas_curso }} horas</p>
+                                    <a href="{% url 'perfilCurso' item.id %}"  class="sobreMaisCurso">Ver mais</a>
                                 </div>
                                 <div class="contSegundo" style="background-image: url({% static 'assets/cursos' %}{{ item.imagem_curso }})">
                                     <h1 class="nomeCurso">{{ item.nome_curso }}</h1>
-                                    <div class="sobreMaisCurso">Ver mais sobre o curso</div>
+                                    <a href="{% url 'perfilCurso' item.id %}"  class="sobreMaisCurso">Ver mais</a>
                                 </div>
                             {% elif item.tipo == "trilha" %}
-                                <p><strong>Trilha:</strong> {{ item.nome_trilha }}</p>
-                                <p><strong>Carga Horária:</strong> {{ item.cargaMinTri }} - {{ item.cargaMaxTri }}</p>
+                                <div class="contPrimeiro">
+                                    <p><strong>Trilha:</strong> {{ item.nome_trilha }}</p>
+                                    <p><strong>Descrição:</strong>{{ item.descTri }}</p>
+                                    <p><strong>Carga Horária:</strong> {{ item.cargaMinTri }}h - {{ item.cargaMaxTri }}h</p>
+                                    <a href="{% url 'cursosTrilha' item.id %}" 
+                                       onmouseover="this.style.background='white'; this.style.color='#AB0B12';" 
+                                       onmouseout="this.style.background='#AB0B12'; this.style.color='white';"  
+                                       class="sobreMaisCurso" style="background: #AB0B12" >Ver mais</a>
+                                </div>
                             {% endif %}
                         </div>
                     {% endfor %}

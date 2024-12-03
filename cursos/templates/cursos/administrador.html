@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+{% block title %} Administrador {% endblock %}
+
+{% load static %}
+
+{% block content %}
+    <style>
+        .admDiv{
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .admContainer{
+            width: 65%;
+            height: 65%;
+            box-shadow: 0.5vh 0.5vh 1vh rgba(2, 2, 2, 0.4);
+            border-radius: 1vw;
+            position: relative;
+            display: flex;
+        }
+        .admContainer::before{
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #81070d;
+            width: 0.1vw;
+            height: 80%;
+        }
+        .admFirst,.admSecond{
+            width: 50%;
+            height: 90%;
+            text-align: center;
+            margin: auto;
+        }
+        .admFirst{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-evenly;
+            h1{
+                font-size: 4vw;
+                color: darkred;
+            }
+            h4{
+                font-size: 1.7vw;
+                font-weight: lighter;
+                text-align: left;
+                max-width: 80%;
+            }
+            a{
+                color: #AB0B12;
+                font-weight: bold;
+            }
+        }
+        .admSecond{
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            a{
+                width: 70%;
+                margin: auto;
+                background: #AB0B12;
+                border-radius: 1vh;
+                text-align: center;
+                font-size: 1.6vw;
+                color: white;
+                padding: 1vh;
+            }
+        }
+    </style>
+    <div class="admDiv">
+        <div class="admContainer">
+            <div class="admFirst">
+                <h1>ADM</h1>
+                <h4>Sla oque escrever aqui meu deus</h4>
+                <h4><a href="{% url 'Logout' %}">Realizar Logout </a></h4>
+            </div>
+            <div class="admSecond">
+                <h3>Opções de adm:</h3>
+                <a href="{% url 'adicionarCurso' %}">Adicionar Curso</a>
+                <a href="{% url 'cursosApagados' %}">Ver Curso Desativados</a>
+                <a href="{% url 'respostas' %}">Ver Questionários</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
