@@ -195,8 +195,8 @@ def  adicionar_curso(request):
                 tipo_curso=tipo_curso,
                 horas_curso=horas_curso,
                 descricao_curso=descricao_curso,
-                dias_curso=dias_lista,
-                tags_cursos=tags_lista,
+                dias_curso=','.join(dias_lista),  # Converte a lista para uma string separada por vírgulas
+                tags_cursos=','.join(tags_lista),
                 imagem_curso=uploaded_file_url,
                 statusPag_curso=status_curso
             )
