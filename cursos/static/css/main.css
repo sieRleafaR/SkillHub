@@ -558,6 +558,7 @@ main{
     background-position: center;
     padding: 0;
     margin: 0;
+    position: relative;
     .containerMenu{
         height: 42.5vh;
         display: flex;
@@ -603,7 +604,7 @@ main{
         height: 2.5vw;
         position: absolute;
         right: 0.5vh;
-        bottom: 5.5vh;
+        bottom: 0.5vh;
         box-sizing: border-box;
         stroke: #AB0B12;
         fill: none;
@@ -705,7 +706,7 @@ main{
     .feedbackBtnAtivarPopup{
         position: absolute;
         left: 0.5vh;
-        bottom: 5.5vh;
+        bottom: 0.5vh;
     }
     #feedbackForm{
         display: flex;
