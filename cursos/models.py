@@ -16,7 +16,7 @@ class Cursos(models.Model):
     status_curso = models.BooleanField(default=True)
 
     class Meta:
-        db_table = 'Cursos'
+        db_table = 'cursos'
 
     def __str__(self):
         return self.nome_curso
@@ -29,7 +29,7 @@ class Formulario(models.Model):
     nomeCurso = models.CharField(max_length=100)
 
     class Meta:
-        db_table = 'Formulario'
+        db_table = 'formulario'
 
     def __str__(self):
         return self.nomeForm
@@ -39,7 +39,7 @@ class Feedback(models.Model):
     numestrela = models.IntegerField()
 
     class Meta:
-        db_table = 'Feedback'
+        db_table = 'feedback'
 
 
 class Usuario(models.Model):
@@ -47,7 +47,7 @@ class Usuario(models.Model):
     senha = models.CharField(max_length=100)
 
     class Meta:
-        db_table = 'Usuario'
+        db_table = 'usuario'
 
     def __str__(self):
         return self.usuario
@@ -62,7 +62,7 @@ class CursoCalendario(models.Model):
     statusCalen = models.IntegerField()
 
     class Meta:
-        db_table = 'Calendario'
+        db_table = 'calendario'
 
     def __str__(self):
         return self.titulo
@@ -78,7 +78,7 @@ class Trilha(models.Model):
     imageTri = models.CharField(max_length=255)  # Caminho da imagem da trilha
 
     class Meta:
-        db_table = 'Trilha'
+        db_table = 'trilha'
 
     def __str__(self):
         return self.nomeTri
@@ -88,7 +88,7 @@ class TagsCursos(models.Model):
     tag = models.CharField(max_length=100, unique=True)  # Campo tag com valores únicos
 
     class Meta:
-        db_table = 'TagsCursos'  # Nome da tabela no banco de dados
+        db_table = 'tagscursos'  # Nome da tabela no banco de dados
 
     def __str__(self):
         return self.tag
@@ -99,7 +99,7 @@ class TiposCursos(models.Model):
     tipo = models.CharField(max_length=100, unique=True)  # Campo tipo com valores únicos
 
     class Meta:
-        db_table = 'TiposCursos'  # Nome da tabela no banco de dados
+        db_table = 'tiposcursos'  # Nome da tabela no banco de dados
 
     def __str__(self):
         return self.tipo

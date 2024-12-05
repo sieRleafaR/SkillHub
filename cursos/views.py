@@ -62,14 +62,14 @@ def validar_contato(telefoneForm, emailForm):
 
 def incrementar_cliques(curso_id):
     with connection.cursor() as cursor:
-        cursor.execute("UPDATE Cursos SET cliques_cursos = cliques_cursos + 1 WHERE id_curso = %s", [curso_id])
+        cursor.execute("UPDATE cursos SET cliques_cursos = cliques_cursos + 1 WHERE id_curso = %s", [curso_id])
 
 def mostrar_perfil_curso(request, curso_id):
     try:
         incrementar_cliques(curso_id)
 
         # Consulta as tags de cursos
-        query_tags = 'SELECT tipo FROM TiposCursos'
+        query_tags = 'SELECT tipo FROM tiposcursos'
         with connection.cursor() as cursor:
             cursor.execute(query_tags)
             tags = [tag[0] for tag in cursor.fetchall()]
@@ -79,7 +79,7 @@ def mostrar_perfil_curso(request, curso_id):
             query = """
                 SELECT id_curso, nome_curso, tipo_curso, descricao_curso, 
                        horas_curso, cliques_cursos, imagem_curso, statusPag_curso, dias_curso, resumo_curso, tags_cursos, status_curso
-                FROM Cursos WHERE id_curso = %s;
+                FROM cursos WHERE id_curso = %s;
             """
             cursor.execute(query, [curso_id])
             curso = cursor.fetchone()
@@ -124,7 +124,7 @@ def cursos(request, filtro=None):
     # Query para buscar cursos
     query_cursos = '''
         SELECT id_curso, nome_curso, tipo_curso, cliques_cursos, tags_cursos, imagem_curso
-        FROM Cursos where status_curso = 1
+        FROM cursos where status_curso = 1
     '''
     if filtro == 'populares':
         query_cursos += ' ORDER BY cliques_cursos DESC'
@@ -147,7 +147,7 @@ def cursos(request, filtro=None):
     ]
 
     # Query para buscar tags
-    query_tags = 'SELECT tag FROM TagsCursos'
+    query_tags = 'SELECT tag FROM tagscursos'
     with connection.cursor() as cursor:
         cursor.execute(query_tags)
         tags = [tag[0] for tag in cursor.fetchall()]  # Extrai apenas o valor da tag
@@ -248,7 +248,7 @@ def editarCurso(request, idCurso):
         query = f"""
             SELECT id_curso, nome_curso, tipo_curso, descricao_curso, 
                    horas_curso, cliques_cursos, imagem_curso, statusPag_curso, dias_curso, resumo_curso, tags_cursos, status_curso
-            FROM Cursos WHERE id_curso = {idCurso};
+            FROM cursos WHERE id_curso = {idCurso};
         """
         cursor.execute(query)
         curso = cursor.fetchone()
@@ -301,7 +301,7 @@ def editarCurso(request, idCurso):
                 uploaded_file_url = curso[6]
             with connection.cursor() as cursor:
                 cursor.execute("""
-                    UPDATE Cursos
+                    UPDATE cursos
                     SET
                         nome_curso = %s,
                         resumo_curso = %s,
@@ -530,7 +530,7 @@ def cursosTrilha(request, idTrilha):
         with connection.cursor() as cursor:
             query = """
                 SELECT nomeTri, explicaTri, cargaMinTri, cargaMaxTri, etapas, imageTri
-                FROM Trilha WHERE idTrilha = %s;
+                FROM trilha WHERE idTrilha = %s;
             """
             cursor.execute(query, [idTrilha])
             trilha = cursor.fetchone()
@@ -556,7 +556,7 @@ def cursosTrilha(request, idTrilha):
                 if curso_ids:
                     query_curso = """
                         SELECT id_curso, nome_curso, descricao_curso, imagem_curso, horas_curso, statusPag_curso
-                        FROM Cursos WHERE id_curso IN %s;
+                        FROM cursos WHERE id_curso IN %s;
                     """
                     cursor.execute(query_curso, [tuple(curso_ids)])
                     for curso in cursor.fetchall():
@@ -575,7 +575,7 @@ def cursosTrilha(request, idTrilha):
                 if trilha_ids:
                     query_trilha = """
                         SELECT idTrilha, nomeTri, cargaMinTri, cargaMaxTri, imageTri, explicaTri
-                        FROM Trilha WHERE idTrilha IN %s;
+                        FROM trilha WHERE idTrilha IN %s;
                     """
                     cursor.execute(query_trilha, [tuple(trilha_ids)])
                     for sub_trilha in cursor.fetchall():
