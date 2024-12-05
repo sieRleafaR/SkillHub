@@ -1152,6 +1152,9 @@ main{
             h4{
                 color: white;
                 padding: 1vw;
+                max-width: 38vw;
+                text-align: left;
+                font-weight: lighter;
             }
             *{
                 margin-left: 4vw;
@@ -1852,7 +1855,7 @@ main{
         .gridContainer{
             display: grid;
             grid-template-columns: repeat(3, 33%);
-            grid-template-rows: repeat(auto-fill, 52vh);
+            grid-template-rows: repeat(auto-fill, 69vh);
             align-items: center;
             justify-content: center;
             width: 100%;
@@ -2157,16 +2160,17 @@ main{
 
         .cursoCard {
             background-color: rgb(222, 221, 221);
-            height: 43vh;
+            height: 42vh;
             border-radius: 1vw;
             display: flex;
             text-align: center;
             align-items: center;
-            justify-content: space-evenly;
+            justify-content: space-between;
             flex-direction: column;
             width: 28vw;
             margin: 5vh auto 5vh auto;
             position: relative;
+            padding-bottom: 2vh;
         }
         .cursoCard h2 {
             max-width: 100%;
@@ -2193,7 +2197,7 @@ main{
         }
         .cursoCard img {
             width: 100%;
-            height: 21vh;
+            height: 24vh;
             object-fit: cover;
             border-radius: 1vw 1vw 0 0;
         }
@@ -2228,7 +2232,6 @@ main{
             background-color: #b60f0f;
             color: white;
             border: none;
-            margin: 3vh;
             padding: 1vh 2vh;
             font-size: 3.5vh;
             border-radius: 2vw;
@@ -2838,6 +2841,9 @@ main{
             justify-content: space-between;
             align-items: center;
             width: 100%;
+            h1{
+                background-color: #263238;
+            }
         }
         .imgPerfil{
             width: 65%;

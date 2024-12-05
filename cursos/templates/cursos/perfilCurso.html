@@ -1,6 +1,11 @@
 {% extends 'base.html' %}
-
-{% block title %}Curso - {{ curso.nome_curso }}{% endblock %}
+{% block title %}
+    {% if estadoPagina == 'adicionar' %}
+        Adicionar Curso
+    {% else %}
+        Curso - {{ curso.nome_curso }}
+    {% endif %}
+{% endblock %}
 
 {% load static %}
 
@@ -53,7 +58,12 @@
                 <div class="lorax">
                     <div class="info">
                     {% if estadoPagina == 'mostrar' %}
-                        <img src="{% static 'assets/cursos/' %}{{ curso.imagem_curso }}" class="imgPerfil">
+
+                        {% if "https" in curso.imagem_curso %}
+                            <img src="{{ curso.imagem_curso }}" alt="{{ curso.imagem_curso }}" class="imgPerfil">
+                        {% else %}
+                            <img src="{% static 'assets/cursos' %}{{ curso.imagem_curso }}" alt="{{ curso.imagem_curso }}" class="imgPerfil">
+                        {% endif %}
                         <h1>{{ curso.nome_curso }}</h1>
                         <p>Curso {{ curso.tipo_curso }}</p>
                         <h3>Resumo do Curso:</h3>

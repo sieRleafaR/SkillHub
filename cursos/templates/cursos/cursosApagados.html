@@ -10,33 +10,40 @@
     <div id="cursos">
         <div id="PerfilCurso" class="cursoContainer">
             <section class="cursos" id="curso-list">
-            {% for curso in cursos_inativos %}
-                <div class="cursoCard"
-                     data-nome="{{ curso.nome_curso|lower }}"
-                     data-tipo="{{ curso.tipo_curso|lower }}"
-                     data-tags="{{ curso.tags_cursos|lower }}">
-                    <img src="{% static 'assets/cursos' %}{{ curso.imagem_curso }}" alt="{{ curso.imagem_curso }}">
-                    <div class="infoCursos">
-                        <textosCurso>
-                            <h2>{{ curso.nome_curso }}</h2>
-                            <p>Curso de {{ curso.tipo_curso }}</p>
-                        </textosCurso>
-                        <a href="{% url 'perfilCurso' curso.id_curso %}" class="btn">Saiba mais</a>
+                {% if not cursos_inativos %}
+                    <h1>Nenhum curso desativado</h1>
+                {% endif %}
+                {% for curso in cursos_inativos %}
+                    <div class="cursoCard"
+                         data-nome="{{ curso.nome_curso|lower }}"
+                         data-tipo="{{ curso.tipo_curso|lower }}"
+                         data-tags="{{ curso.tags_cursos|lower }}">
+                        {% if "https" in curso.imagem_curso %}
+                            <img src="{{ curso.imagem_curso }}" alt="{{ curso.imagem_curso }}">
+                        {% else %}
+                            <img src="{% static 'assets/cursos' %}{{ curso.imagem_curso }}" alt="{{ curso.imagem_curso }}">
+                        {% endif %}
+                        <div class="infoCursos">
+                            <textosCurso>
+                                <h2>{{ curso.nome_curso }}</h2>
+                                <p>Curso de {{ curso.tipo_curso }}</p>
+                            </textosCurso>
+                            <a href="{% url 'perfilCurso' curso.id_curso %}" class="btn">Saiba mais</a>
+                        </div>
+                        <style>
+                            .btnEditCurso{
+                                color: #AB0B12;
+                                font-weight: bold;
+                                text-align: center;
+                                margin: auto;
+                            }
+                        </style>
+                        <div style="justify-content: center" class="contAdminiCurso">
+                            <a href="{% url 'reativarCurso' curso.id_curso %}" class="btnEditCurso">Reativar Curso</a>
+                        </div>
                     </div>
-                    <style>
-                        .btnEditCurso{
-                            color: #AB0B12;
-                            font-weight: bold;
-                            text-align: center;
-                            margin: auto;
-                        }
-                    </style>
-                    <div style="justify-content: center" class="contAdminiCurso">
-                        <a href="{% url 'reativarCurso' curso.id_curso %}" class="btnEditCurso">Reativar Curso</a>
-                    </div>
-                </div>
-            {% endfor %}
-        </section>
+                {% endfor %}
+            </section>
         </div>
     </div>
     <script>

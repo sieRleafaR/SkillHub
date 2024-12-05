@@ -17,7 +17,11 @@
                     {% for trilha in trilhas %}
                         <div class="card">
                             <div class="infoCursos">
-                                <img class="img" src="{% static 'assets/trilhas' %}{{ trilha.imageTri }}">
+                                {% if "https" in trilha.imageTri %}
+                                    <img class="img" src="{{ trilha.imageTri }}">
+                                {% else %}
+                                    <img class="img" src="{% static 'assets/trilhas' %}{{ trilha.imageTri }}">
+                                {% endif %}
                                 <textosCurso class="textos">
                                     <h2 class="titulo">{{ trilha.nomeTri }}</h2>
                                     <p class="legenda">trilha de {{ trilha.explicaTri }}</p>
