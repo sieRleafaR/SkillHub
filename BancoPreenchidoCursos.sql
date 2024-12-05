@@ -39,3 +39,7 @@ DELIMITER ;
 insert into Usuario(usuario,senha) values
 ('Adm', 'Adm@801'),
 ('1', '1');
+
+insert into Calendario(titulo,dia, mes, ano, statusCalen) values
+('Apresentação do TCC de Desenvolvimento de Sistemas - Primeiro Dia', '10', '12', '2024', '1'),
+('Apresentação do TCC de Desenvolvimento de Sistemas - Segundo Dia', '12', '12', '2024', '1');
